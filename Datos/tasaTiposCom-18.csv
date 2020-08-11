@@ -1,0 +1,267 @@
+"","source","target","value","ind"
+"1","Asesinatos consumados","Andaluc韆",0.86,0
+"2","Asesinatos consumados","Arag髇",0.69,0
+"3","Asesinatos consumados","Principado de Asturias",0.68,0
+"4","Asesinatos consumados","Islas Baleares",0.71,0
+"5","Asesinatos consumados","Islas Canarias",1.13,0
+"6","Asesinatos consumados","Cantabria",0.34,0
+"7","Asesinatos consumados","Castilla y Le髇",0.46,0
+"8","Asesinatos consumados","Castilla-La Mancha",0.39,0
+"9","Asesinatos consumados","Catalu馻",0.59,0
+"10","Asesinatos consumados","Comunidad Valenciana",0.5,0
+"11","Asesinatos consumados","Extremadura",0.37,0
+"12","Asesinatos consumados","Galicia",0.3,0
+"13","Asesinatos consumados","Comunidad de Madrid",0.55,0
+"14","Asesinatos consumados","Regi髇 de Murcia",0.74,0
+"15","Asesinatos consumados","Comunidad Foral de Navarra",1.7,0
+"16","Asesinatos consumados","Pa韘 Vasco",0.27,0
+"17","Asesinatos consumados","La Rioja",0.32,0
+"18","Asesinatos consumados","Ceuta",1.17,0
+"19","Asesinatos consumados","Melilla",0,0
+"20","Asesinatos en grado tentativa","Andaluc韆",2.27,0
+"21","Asesinatos en grado tentativa","Arag髇",0.61,0
+"22","Asesinatos en grado tentativa","Principado de Asturias",1.07,0
+"23","Asesinatos en grado tentativa","Islas Baleares",3.19,0
+"24","Asesinatos en grado tentativa","Islas Canarias",1.93,0
+"25","Asesinatos en grado tentativa","Cantabria",0.52,0
+"26","Asesinatos en grado tentativa","Castilla y Le髇",0.95,0
+"27","Asesinatos en grado tentativa","Castilla-La Mancha",1.43,0
+"28","Asesinatos en grado tentativa","Catalu馻",2.21,0
+"29","Asesinatos en grado tentativa","Comunidad Valenciana",1.87,0
+"30","Asesinatos en grado tentativa","Extremadura",1.21,0
+"31","Asesinatos en grado tentativa","Galicia",0.93,0
+"32","Asesinatos en grado tentativa","Comunidad de Madrid",1.19,0
+"33","Asesinatos en grado tentativa","Regi髇 de Murcia",1.69,0
+"34","Asesinatos en grado tentativa","Comunidad Foral de Navarra",2.16,0
+"35","Asesinatos en grado tentativa","Pa韘 Vasco",1.68,0
+"36","Asesinatos en grado tentativa","La Rioja",0.63,0
+"37","Asesinatos en grado tentativa","Ceuta",1.17,0
+"38","Asesinatos en grado tentativa","Melilla",1.16,0
+"39","Delitos de lesiones","Andaluc韆",34.79,0
+"40","Delitos de lesiones","Arag髇",37.44,0
+"41","Delitos de lesiones","Principado de Asturias",36.08,0
+"42","Delitos de lesiones","Islas Baleares",70.95,0
+"43","Delitos de lesiones","Islas Canarias",49.91,0
+"44","Delitos de lesiones","Cantabria",47.4,0
+"45","Delitos de lesiones","Castilla y Le髇",29.84,0
+"46","Delitos de lesiones","Castilla-La Mancha",28.72,0
+"47","Delitos de lesiones","Catalu馻",42.43,0
+"48","Delitos de lesiones","Comunidad Valenciana",39.61,0
+"49","Delitos de lesiones","Extremadura",32.44,0
+"50","Delitos de lesiones","Galicia",34.87,0
+"51","Delitos de lesiones","Comunidad de Madrid",32.94,0
+"52","Delitos de lesiones","Regi髇 de Murcia",41.93,0
+"53","Delitos de lesiones","Comunidad Foral de Navarra",58.37,0
+"54","Delitos de lesiones","Pa韘 Vasco",47.79,0
+"55","Delitos de lesiones","La Rioja",45.3,0
+"56","Delitos de lesiones","Ceuta",59.9,0
+"57","Delitos de lesiones","Melilla",163.22,0
+"58","Secuestro","Andaluc韆",0.31,0
+"59","Secuestro","Arag髇",0,0
+"60","Secuestro","Principado de Asturias",0.29,0
+"61","Secuestro","Islas Baleares",0.09,0
+"62","Secuestro","Islas Canarias",0.09,0
+"63","Secuestro","Cantabria",0,0
+"64","Secuestro","Castilla y Le髇",0.08,0
+"65","Secuestro","Castilla-La Mancha",0.25,0
+"66","Secuestro","Catalu馻",0.07,0
+"67","Secuestro","Comunidad Valenciana",0.12,0
+"68","Secuestro","Extremadura",0,0
+"69","Secuestro","Galicia",0.07,0
+"70","Secuestro","Comunidad de Madrid",0.18,0
+"71","Secuestro","Regi髇 de Murcia",0.2,0
+"72","Secuestro","Comunidad Foral de Navarra",0.46,0
+"73","Secuestro","Pa韘 Vasco",0.23,0
+"74","Secuestro","La Rioja",0,0
+"75","Secuestro","Ceuta",0,0
+"76","Secuestro","Melilla",0,0
+"77","Delitos contra la libertad e indemnidad
+                    sexual","Andaluc韆",28,0
+"78","Delitos contra la libertad e indemnidad
+                    sexual","Arag髇",26.29,0
+"79","Delitos contra la libertad e indemnidad
+                    sexual","Principado de Asturias",20.13,0
+"80","Delitos contra la libertad e indemnidad
+                    sexual","Islas Baleares",51.73,0
+"81","Delitos contra la libertad e indemnidad
+                    sexual","Islas Canarias",35.3,0
+"82","Delitos contra la libertad e indemnidad
+                    sexual","Cantabria",17.58,0
+"83","Delitos contra la libertad e indemnidad
+                    sexual","Castilla y Le髇",18.39,0
+"84","Delitos contra la libertad e indemnidad
+                    sexual","Castilla-La Mancha",24.13,0
+"85","Delitos contra la libertad e indemnidad
+                    sexual","Catalu馻",34.18,0
+"86","Delitos contra la libertad e indemnidad
+                    sexual","Comunidad Valenciana",31.91,0
+"87","Delitos contra la libertad e indemnidad
+                    sexual","Extremadura",19.95,0
+"88","Delitos contra la libertad e indemnidad
+                    sexual","Galicia",19.99,0
+"89","Delitos contra la libertad e indemnidad
+                    sexual","Comunidad de Madrid",30.66,0
+"90","Delitos contra la libertad e indemnidad
+                    sexual","Regi髇 de Murcia",32.4,0
+"91","Delitos contra la libertad e indemnidad
+                    sexual","Comunidad Foral de Navarra",41.85,0
+"92","Delitos contra la libertad e indemnidad
+                    sexual","Pa韘 Vasco",29.97,0
+"93","Delitos contra la libertad e indemnidad
+                    sexual","La Rioja",19.64,0
+"94","Delitos contra la libertad e indemnidad
+                    sexual","Ceuta",58.72,0
+"95","Delitos contra la libertad e indemnidad
+                    sexual","Melilla",31.26,0
+"96","Agresion sexual con penetraci髇","Andaluc韆",2.4,0
+"97","Agresion sexual con penetraci髇","Arag髇",2.52,0
+"98","Agresion sexual con penetraci髇","Principado de Asturias",1.65,0
+"99","Agresion sexual con penetraci髇","Islas Baleares",6.47,0
+"100","Agresion sexual con penetraci髇","Islas Canarias",4.14,0
+"101","Agresion sexual con penetraci髇","Cantabria",1.38,0
+"102","Agresion sexual con penetraci髇","Castilla y Le髇",2.16,0
+"103","Agresion sexual con penetraci髇","Castilla-La Mancha",2.57,0
+"104","Agresion sexual con penetraci髇","Catalu馻",6.16,0
+"105","Agresion sexual con penetraci髇","Comunidad Valenciana",3.38,0
+"106","Agresion sexual con penetraci髇","Extremadura",1.96,0
+"107","Agresion sexual con penetraci髇","Galicia",2.07,0
+"108","Agresion sexual con penetraci髇","Comunidad de Madrid",3.83,0
+"109","Agresion sexual con penetraci髇","Regi髇 de Murcia",3.11,0
+"110","Agresion sexual con penetraci髇","Comunidad Foral de Navarra",5.56,0
+"111","Agresion sexual con penetraci髇","Pa韘 Vasco",5.05,0
+"112","Agresion sexual con penetraci髇","La Rioja",2.22,0
+"113","Agresion sexual con penetraci髇","Ceuta",5.87,0
+"114","Agresion sexual con penetraci髇","Melilla",2.32,0
+"115","Resto de delitos contra la libertad","Andaluc韆",25.61,0
+"116","Resto de delitos contra la libertad","Arag髇",23.76,0
+"117","Resto de delitos contra la libertad","Principado de Asturias",18.48,0
+"118","Resto de delitos contra la libertad","Islas Baleares",45.26,0
+"119","Resto de delitos contra la libertad","Islas Canarias",31.16,0
+"120","Resto de delitos contra la libertad","Cantabria",16.2,0
+"121","Resto de delitos contra la libertad","Castilla y Le髇",16.23,0
+"122","Resto de delitos contra la libertad","Castilla-La Mancha",21.56,0
+"123","Resto de delitos contra la libertad","Catalu馻",28.03,0
+"124","Resto de delitos contra la libertad","Comunidad Valenciana",28.53,0
+"125","Resto de delitos contra la libertad","Extremadura",17.99,0
+"126","Resto de delitos contra la libertad","Galicia",17.91,0
+"127","Resto de delitos contra la libertad","Comunidad de Madrid",26.83,0
+"128","Resto de delitos contra la libertad","Regi髇 de Murcia",29.29,0
+"129","Resto de delitos contra la libertad","Comunidad Foral de Navarra",36.29,0
+"130","Resto de delitos contra la libertad","Pa韘 Vasco",24.92,0
+"131","Resto de delitos contra la libertad","La Rioja",17.42,0
+"132","Resto de delitos contra la libertad","Ceuta",52.85,0
+"133","Resto de delitos contra la libertad","Melilla",28.94,0
+"134","Robos con violencia e intimidaci髇","Andaluc韆",85.31,0
+"135","Robos con violencia e intimidaci髇","Arag髇",71.06,0
+"136","Robos con violencia e intimidaci髇","Principado de Asturias",34.62,0
+"137","Robos con violencia e intimidaci髇","Islas Baleares",109.4,0
+"138","Robos con violencia e intimidaci髇","Islas Canarias",70.26,0
+"139","Robos con violencia e intimidaci髇","Cantabria",31.02,0
+"140","Robos con violencia e intimidaci髇","Castilla y Le髇",29.47,0
+"141","Robos con violencia e intimidaci髇","Castilla-La Mancha",48.01,0
+"142","Robos con violencia e intimidaci髇","Catalu馻",296.13,0
+"143","Robos con violencia e intimidaci髇","Comunidad Valenciana",103.17,0
+"144","Robos con violencia e intimidaci髇","Extremadura",23.49,0
+"145","Robos con violencia e intimidaci髇","Galicia",35.42,0
+"146","Robos con violencia e intimidaci髇","Comunidad de Madrid",220.32,0
+"147","Robos con violencia e intimidaci髇","Regi髇 de Murcia",97.73,0
+"148","Robos con violencia e intimidaci髇","Comunidad Foral de Navarra",39.38,0
+"149","Robos con violencia e intimidaci髇","Pa韘 Vasco",81.44,0
+"150","Robos con violencia e intimidaci髇","La Rioja",24.71,0
+"151","Robos con violencia e intimidaci髇","Ceuta",176.17,0
+"152","Robos con violencia e intimidaci髇","Melilla",385.49,0
+"153","Robos con fuerza","Andaluc韆",274.7,0
+"154","Robos con fuerza","Arag髇",190.87,0
+"155","Robos con fuerza","Principado de Asturias",144.71,0
+"156","Robos con fuerza","Islas Baleares",361.41,0
+"157","Robos con fuerza","Islas Canarias",235.56,0
+"158","Robos con fuerza","Cantabria",271.27,0
+"159","Robos con fuerza","Castilla y Le髇",221.74,0
+"160","Robos con fuerza","Castilla-La Mancha",365.16,0
+"161","Robos con fuerza","Catalu馻",453.75,0
+"162","Robos con fuerza","Comunidad Valenciana",440.11,0
+"163","Robos con fuerza","Extremadura",187.54,0
+"164","Robos con fuerza","Galicia",197.98,0
+"165","Robos con fuerza","Comunidad de Madrid",293.82,0
+"166","Robos con fuerza","Regi髇 de Murcia",457.01,0
+"167","Robos con fuerza","Comunidad Foral de Navarra",233.19,0
+"168","Robos con fuerza","Pa韘 Vasco",363.88,0
+"169","Robos con fuerza","La Rioja",190.39,0
+"170","Robos con fuerza","Ceuta",103.35,0
+"171","Robos con fuerza","Melilla",155.12,0
+"172","Robos en domicilios","Andaluc韆",187.37,0
+"173","Robos en domicilios","Arag髇",133.41,0
+"174","Robos en domicilios","Principado de Asturias",84.42,0
+"175","Robos en domicilios","Islas Baleares",270,0
+"176","Robos en domicilios","Islas Canarias",151.9,0
+"177","Robos en domicilios","Cantabria",167.86,0
+"178","Robos en domicilios","Castilla y Le髇",147.64,0
+"179","Robos en domicilios","Castilla-La Mancha",271.41,0
+"180","Robos en domicilios","Catalu馻",339.65,0
+"181","Robos en domicilios","Comunidad Valenciana",350.93,0
+"182","Robos en domicilios","Extremadura",109.33,0
+"183","Robos en domicilios","Galicia",124.88,0
+"184","Robos en domicilios","Comunidad de Madrid",194.48,0
+"185","Robos en domicilios","Regi髇 de Murcia",381.6,0
+"186","Robos en domicilios","Comunidad Foral de Navarra",152.42,0
+"187","Robos en domicilios","Pa韘 Vasco",206.18,0
+"188","Robos en domicilios","La Rioja",146.67,0
+"189","Robos en domicilios","Ceuta",70.47,0
+"190","Robos en domicilios","Melilla",105.34,0
+"191","Hurtos","Andaluc韆",1112.66,0
+"192","Hurtos","Arag髇",812.16,0
+"193","Hurtos","Principado de Asturias",701.1,0
+"194","Hurtos","Islas Baleares",2436.16,0
+"195","Hurtos","Islas Canarias",1282,0
+"196","Hurtos","Cantabria",802.1,0
+"197","Hurtos","Castilla y Le髇",817.75,0
+"198","Hurtos","Castilla-La Mancha",712.99,0
+"199","Hurtos","Catalu馻",2527,0
+"200","Hurtos","Comunidad Valenciana",1412.21,0
+"201","Hurtos","Extremadura",616.48,0
+"202","Hurtos","Galicia",734.38,0
+"203","Hurtos","Comunidad de Madrid",2319.86,0
+"204","Hurtos","Regi髇 de Murcia",997.29,0
+"205","Hurtos","Comunidad Foral de Navarra",1196.19,0
+"206","Hurtos","Pa韘 Vasco",1335.92,0
+"207","Hurtos","La Rioja",741.9,0
+"208","Hurtos","Ceuta",1014.75,0
+"209","Hurtos","Melilla",1422.72,0
+"210","Sustracci贸n de veh韈ulos","Andaluc韆",82.7,0
+"211","Sustracci贸n de veh韈ulos","Arag髇",21.93,0
+"212","Sustracci贸n de veh韈ulos","Principado de Asturias",21.2,0
+"213","Sustracci贸n de veh韈ulos","Islas Baleares",128.27,0
+"214","Sustracci贸n de veh韈ulos","Islas Canarias",64.58,0
+"215","Sustracci贸n de veh韈ulos","Cantabria",21.37,0
+"216","Sustracci贸n de veh韈ulos","Castilla y Le髇",24.37,0
+"217","Sustracci贸n de veh韈ulos","Castilla-La Mancha",33.01,0
+"218","Sustracci贸n de veh韈ulos","Catalu馻",120.97,0
+"219","Sustracci贸n de veh韈ulos","Comunidad Valenciana",66.54,0
+"220","Sustracci贸n de veh韈ulos","Extremadura",15.01,0
+"221","Sustracci贸n de veh韈ulos","Galicia",21.69,0
+"222","Sustracci贸n de veh韈ulos","Comunidad de Madrid",132.44,0
+"223","Sustracci贸n de veh韈ulos","Regi髇 de Murcia",64.73,0
+"224","Sustracci贸n de veh韈ulos","Comunidad Foral de Navarra",26.87,0
+"225","Sustracci贸n de veh韈ulos","Pa韘 Vasco",42.2,0
+"226","Sustracci贸n de veh韈ulos","La Rioja",25.03,0
+"227","Sustracci贸n de veh韈ulos","Ceuta",291.27,0
+"228","Sustracci贸n de veh韈ulos","Melilla",101.87,0
+"229","Tr醘ico de drogas","Andaluc韆",43.6,0
+"230","Tr醘ico de drogas","Arag髇",25.67,0
+"231","Tr醘ico de drogas","Principado de Asturias",13.62,0
+"232","Tr醘ico de drogas","Islas Baleares",45.53,0
+"233","Tr醘ico de drogas","Islas Canarias",29.28,0
+"234","Tr醘ico de drogas","Cantabria",14.99,0
+"235","Tr醘ico de drogas","Castilla y Le髇",16.94,0
+"236","Tr醘ico de drogas","Castilla-La Mancha",21.66,0
+"237","Tr醘ico de drogas","Catalu馻",32.26,0
+"238","Tr醘ico de drogas","Comunidad Valenciana",35.44,0
+"239","Tr醘ico de drogas","Extremadura",21.72,0
+"240","Tr醘ico de drogas","Galicia",15.99,0
+"241","Tr醘ico de drogas","Comunidad de Madrid",29.7,0
+"242","Tr醘ico de drogas","Regi髇 de Murcia",19.41,0
+"243","Tr醘ico de drogas","Comunidad Foral de Navarra",21.62,0
+"244","Tr醘ico de drogas","Pa韘 Vasco",16.69,0
+"245","Tr醘ico de drogas","La Rioja",23.13,0
+"246","Tr醘ico de drogas","Ceuta",194.96,0
+"247","Tr醘ico de drogas","Melilla",55.57,0
