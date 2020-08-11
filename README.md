@@ -7,8 +7,13 @@ sobre el territorio español. Asimismo, mediante factores socioeconómicos, trat
 delictivos consiguiendo centrar la atención en la raíz del problema y así hallar medidas para su prevención. Los principales lenguajes de programación
 empleados son R y Python.
 
-### Keywords
+### Palabras clave
 Tasa de criminalidad, número de infracciones, población reclusa, producto interior bruto,
 modelo lineal generalizado, distribución de Poisson, red neuronal recursiva, análisis de
 correspondencias, análisis de componentes principales, análisis de la varianza, Rstudio, Python,
 plotly, ggplot2.
+
+### Ficheros
+
+* MemoriaTFG_Estadistica_IvanLopezMunain: documentación sobre todos los desarrollos realizados.
+* Codigo:
