@@ -1,0 +1,2485 @@
+---
+title: "Anexos"
+author: "Iván López de Munain"
+#date: "`r format(Sys.time(), '%d %B, %Y')`"
+lang: es
+output: 
+  html_document:
+    toc: true
+    toc_depth: 3
+    toc_float: 
+      collapse: false
+    number_sections: true
+    theme: united
+    fig_caption: true
+    df_print: paged
+    code_folding: hide
+    
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, warning = F, message = F)
+```
+
+
+
+# - Aclaraciones
+
+Los siguientes apartados se encuentran nombrados igual que en la documentación del proyecto, así es posible localizar los fragmentos de código de cada uno de los procedimientos llevados a cabo. Al tratarse de un _notebook_ _html_ permite las representaciones interactivas y dinámicas, es por esto que se recomienda utilizar este soporte en vez de los anexos en _pdf_. Esta documentación se ha realizado mediante __Rmarkdown__. 
+
+__Es recomendable utilizar esta plataforma en vez del pdf debido a que contiene mayor cantidad de información.__
+
+
+
+
+```{r, echo=F}
+setwd('C:/Users/Iván/Desktop/INDAT/5º/Segundo cuatrimestre/TFG-Estadistica/Código/')
+```
+
+# - Configuracion Rmarkdown
+
+```{r, eval=FALSE}
+
+---
+title: "Anexos"
+author: "Iván López de Munain"
+#date: "`r format(Sys.time(), '%d %B, %Y')`"
+lang: es
+output: 
+  html_document:
+    toc: true
+    toc_depth: 3
+    toc_float: 
+      collapse: false
+    number_sections: true
+    theme: united
+    fig_caption: true
+    df_print: paged
+    code_folding: hide
+    
+---
+      
+knitr::opts_chunk$set(echo = TRUE, warning = F, message = F)
+
+```
+
+# - Librerías
+
+```{r librerias,warning=F , message=F}
+
+library(plotly) 
+library(RColorBrewer)
+library(kableExtra)
+library(sp)
+library(xlsx)
+library(ggplot2)
+library(networkD3)
+library(dplyr)
+library(tidyverse)
+library(MASS)
+library(scales)
+library(caret)
+library(FactoMineR)
+library(factoextra)
+library(pca3d)
+library(rmarkdown)
+
+```
+
+
+# - Análisis descriptivo
+
+
+## - Mapa interactivo de Europa
+
+
+```{r mapaeur}
+
+rm(list=ls())
+
+
+
+# =============== Mapa interactivo Europa ==================== 
+
+datosEuropa<-read.csv("europaTasaCrimenes.csv", header=T, sep=",")
+
+paged_table(datosEuropa[,c("TIME","GEO","ICCS","Value")])
+
+
+
+#tasa por cada 100000 habitantes
+datosEuropa <- datosEuropa %>%
+  mutate(Value=as.numeric(as.character(datosEuropa$Value)))
+
+levels(datosEuropa$GEO)<-
+  c(levels(datosEuropa$GEO),"United Kingdom")
+
+df17<- datosEuropa %>% filter(TIME=="2017")
+df17$GEO[which(df17$GEO=="England and Wales")]<-"United Kingdom"
+df17<- df17[order(df17$GEO),]
+
+df16<- datosEuropa %>% filter(TIME=="2016")
+df16$GEO[which(df16$GEO=="England and Wales")]<-"United Kingdom"
+df16<- df16[order(df16$GEO),]
+
+df15<- datosEuropa %>% filter(TIME=="2015")
+df15$GEO[which(df15$GEO=="England and Wales")]<-"United Kingdom"
+df15<- df15[order(df15$GEO),]
+
+aa<-levels(df17$GEO)[-10]
+aa[13]<-"Germany"
+aa[19]<-"Kosovo"
+
+
+a17<-tapply( df17$Value[!is.na(df17$Value)] ,
+             df17$GEO[!is.na(df17$Value)],sum)
+a16<-tapply( df16$Value[!is.na(df16$Value)] ,
+             df16$GEO[!is.na(df16$Value)],sum)
+a15<-tapply( df15$Value[!is.na(df15$Value)] ,
+             df15$GEO[!is.na(df15$Value)],sum)
+
+datos17<-data.frame(value=a17[-10], pais=as.factor(aa))
+datos17<- datos17[order(datos17$pais),]
+
+datos16<-data.frame(value=a16[-10], pais=as.factor(aa))
+datos16<- datos16[order(datos16$pais),]
+
+datos15<-data.frame(value=a15[-10], pais=as.factor(aa))
+datos15<- datos15[order(datos15$pais),]
+
+
+#====concatenacion de los textos====
+aux <- with(df17, paste('<br>->',  ICCS, ":",  Value))
+
+i<-0
+conca<-NULL
+while(i < length(aux)){
+ 
+  conca[(1+i/13)]<-paste(aux[i+1], aux[i+2],
+                         aux[i+3], aux[i+4],
+                         aux[i+5], aux[i+6],
+                         aux[i+7], aux[i+8],
+                         aux[i+9], aux[i+10],
+                         aux[i+11], aux[i+12],
+                         aux[i+13])
+  i<-i+13 
+}
+
+datos17$texto<-conca
+datos17$texto<-paste("<br>Categorization of crimes in
+                     2017:",datos17$texto)
+
+#2016
+
+aux <- with(df16, paste('<br>->',  ICCS, ":",  Value))
+
+i<-0
+conca<-NULL
+while(i < length(aux)){
+  
+  conca[(1+i/13)]<-paste(aux[i+1], aux[i+2],
+                         aux[i+3], aux[i+4],
+                         aux[i+5], aux[i+6],
+                         aux[i+7], aux[i+8],
+                         aux[i+9], aux[i+10],
+                         aux[i+11], aux[i+12],
+                         aux[i+13])
+  i<-i+13 
+}
+
+datos16$texto<-conca
+datos16$texto<-paste("<br>Categorization of crimes in
+                     2016:",datos16$texto)
+
+
+#2015
+
+aux <- with(df15, paste('<br>->',  ICCS, ":", Value))
+
+i<-0
+conca<-NULL
+while(i < length(aux)){
+  
+  conca[(1+i/13)]<-paste(aux[i+1], aux[i+2], 
+                         aux[i+3], aux[i+4],
+                         aux[i+5], aux[i+6],
+                         aux[i+7], aux[i+8],
+                         aux[i+9], aux[i+10],
+                         aux[i+11], aux[i+12],
+                         aux[i+13])
+  i<-i+13 
+}
+
+datos15$texto<-conca
+datos15$texto<-paste("<br>Categorization of crimes in
+                     2015:",datos15$texto)
+
+
+updatemenus <- list(
+  list(
+    active = 0,
+    type= 'buttons',
+    showactive = F,
+    buttons = list(
+      list(
+        label = "Año 2017",
+        method = "update",
+        args = list(list(visible = c(T, T, F,F)))),
+      list(
+        label = "Año 2016",
+        method = "update",
+        args = list(list(visible = c(T,F, T,F))))
+      ,list(
+        label = "Año 2015",
+        method = "update",
+        args = list(list(visible = c(T,F, F,T))))
+    )))
+
+cols=brewer.pal(9, "Reds")
+
+
+plot_geo() %>% 
+  add_trace(z = ~value, data = datos17,  locations = c("x"),
+            locationmode= "country names", color = ~value,
+            colors = cols,visible=T,showscale=T) %>%
+  add_trace(z = ~value, data = datos17, text= ~texto,
+            locations = ~pais, locationmode= "country names",
+            color = ~value, colors =cols,
+            visible=T,showscale=FALSE) %>%
+  add_trace(z = ~value, data = datos16, text= ~texto,
+            locations = ~pais, locationmode= "country names",
+            color = ~value, colors =cols,
+            visible=F,showscale=FALSE)  %>% 
+  add_trace(z = ~value, data = datos15, text= ~texto,
+            locations = ~pais, locationmode= "country names",
+            color = ~value, colors = cols,
+            visible=F,showscale=F)  %>% 
+ layout(geo = list(scope="europe", projection=list(scale=1.6)), 
+        title="Número de delitos cometidos por 
+        cada 100.000 habitantes",
+         margin=list(l=0,r=0,b=0,t=30),
+        updatemenus=updatemenus)  %>% 
+  colorbar(title = "", thickness=10, which=1,
+           yanchor="bottom", x=1, y=0.5)  
+
+
+```
+
+
+## - Mapas España: valores absolutos y tasas
+
+```{r mapasEsp}
+
+
+#-------Mapa por provincias: valores absolutos----------------
+
+mapaProv<-readRDS('gadm36_ESP_2_sp.rds')
+
+#comentado porque se usa para realizar mapa sin las Canarias
+#y asi disponerlo mÃ¡s bonito
+
+#mapaProv <- mapaProv[mapaProv$NAME_2!="Santa Cruz de Tenerife",]
+#mapaProv <- mapaProv[mapaProv$NAME_2!="Las Palmas",]
+
+datosProv <- read.xlsx('total-infrac-prov.xlsx', sheetIndex = 1)
+
+infracProv <- which(datosProv[,2]!="<NA>")
+
+#quitamos el total y el extranjero
+infracProv <- infracProv[3:(length(infracProv)-1)]
+
+#tabla de autoridad
+provDefinit<-c("Álava", "Albacete", "Alicante"  , "Almería",
+               "Ávila", "Badajoz"     , "Baleares",
+               "Barcelona","Burgos","Cáceres", "Cádiz",
+               "Castellón","Ciudad Real" , "Córdoba" ,
+               "A Coruña", "Cuenca","Girona",
+               "Granada", "Guadalajara" ,"Guipúzcoa",
+               "Huelva", "Huesca","Jaén" ,"León",
+               "Lleida","La Rioja" ,"Lugo","Madrid",
+               "Málaga","Murcia", "Navarra" , "Ourense",
+               "Asturias", "Palencia", "Las Palmas",
+                "Pontevedra", "Salamanca"  ,
+               "Santa Cruz de Tenerife",
+                "Cantabria",  "Segovia", "Sevilla",
+               "Soria" ,"Tarragona", "Teruel",
+               "Toledo"    ,"Valencia", "Valladolid" ,
+               "Vizcaya"   , "Zamora", "Zaragoza" ,
+               "Ceuta", "Melilla" )
+
+
+
+#which(provDefinit=="Santa Cruz de Tenerife")
+#which(provDefinit=="Las Palmas")
+datosProv <- as.numeric(as.vector(
+  datosProv[infracProv[c(1:length(infracProv))],2]))
+
+datosAbsProv<-data.frame(NAME_2=provDefinit,
+                         Infracciones=datosProv)
+
+merged<- merge(mapaProv@data, datosAbsProv)
+
+
+
+correct.ordering <- match(mapaProv$NAME_2, merged$NAME_2)
+mapaProv@data <- merged[correct.ordering,]
+
+my.palette <- colorRampPalette(brewer.pal(9, "Reds"))(max(mapaProv@data$Infracciones))
+
+spplot(mapaProv, "Infracciones",  col.regions=my.palette,
+       main="Infracciones por provincia año 2018")
+  
+#--------Mapa por provincias: tasa de criminalidad -------------
+
+poblacionProv<-read.xlsx('poblacionProvincias18.xlsx',
+                         sheetIndex = 1)
+
+#tabla de autoridad
+provPobl<-c("Albacete", "Alicante", "Almería", "Álava","Asturias",
+            "Ávila","Badajoz", "Baleares", "Barcelona", "Vizcaya",
+            "Burgos", "Cáceres", "Cádiz", "Cantabria","Castellón",
+            "Ciudad Real", "Córdoba","A Coruña",
+            "Cuenca","Guipúzcoa","Girona",
+            "Granada","Guadalajara","Huelva","Huesca","Jaén",
+            "León","Lleida","Lugo","Madrid","Málaga","Murcia",
+            "Navarra","Ourense",
+            "Palencia", "Las Palmas",
+            "Pontevedra","La Rioja","Salamanca",
+            "Santa Cruz de Tenerife",
+            "Segovia","Sevilla","Soria","Tarragona",
+            "Teruel","Toledo","Valencia","Valladolid",
+            "Zamora","Zaragoza","Ceuta" , "Melilla")
+
+#which(provPobl=="Santa Cruz de Tenerife")
+#which(provPobl=="Las Palmas")
+aux <- which(poblacionProv[,2]!="<NA>")
+aux <- aux[3:(length(aux))]
+pobProv18 <- as.numeric(as.vector(poblacionProv[aux,2]))
+
+dataPoblProv <- data.frame(NAME_2=provPobl, poblacion=pobProv18)
+
+datosUnion<-merge(datosAbsProv,dataPoblProv)
+
+#variable tasa por mil
+tasaProv<-1000*datosUnion$Infracciones/datosUnion$poblacion
+
+tasaDatosProv<-data.frame(NAME_2=datosUnion$NAME_2, Tasa=tasaProv)
+
+merged<- merge(mapaProv@data, tasaDatosProv)
+
+correct.ordering <- match(mapaProv$NAME_2, merged$NAME_2)
+mapaProv@data <- merged[correct.ordering,]
+
+my.palette <- colorRampPalette(
+  brewer.pal(9, "Reds"))(max(mapaProv$Tasa))
+spplot(mapaProv, "Tasa", col.regions=my.palette,
+       main="Número de infracciones por cada 1000
+       habitantes por provincia en el año 2018")
+
+
+#================= POR COMUNIDADES ==================
+
+#tabla de autoridad por comunidades
+
+comunidades<-c("Andalucía" , "Aragón", "Principado de Asturias",
+               "Islas Baleares", "Islas Canarias",                 
+               "Cantabria"    ,  "Castilla y León" ,
+               "Castilla-La Mancha"  ,      
+               "Cataluña"  , "Comunidad Valenciana",
+               "Extremadura", "Galicia",
+               "Comunidad de Madrid", "Región de Murcia",
+               "Comunidad Foral de Navarra",
+               "País Vasco" , "La Rioja" ,
+               "Ceuta y Melilla")
+
+#----------poblacion por comunidades---------------------
+
+poblacion<-read.xlsx('poblacionComunidades.xlsx', sheetIndex = 1)
+
+
+aux <- which(poblacion[,2]!="<NA>")
+aux <- aux[3:(length(aux))]
+
+
+pob18 <- as.numeric(as.vector(poblacion[aux,2]))
+pob17 <- as.numeric(as.vector(poblacion[aux,3]))
+pob16 <- as.numeric(as.vector(poblacion[aux,4]))
+pob <- data.frame(com=poblacion[aux,1],
+                  pob16=pob16, pob17=pob17, pob18=pob18)
+pobFinal<-data.frame(
+  com=pob$com,PobMedia=apply(pob[,c(2,3,4)],1,mean))
+
+#obtener de menor a mayor las poblaciones
+#pobFinal$com[order(pobFinal$PobMedia)]
+
+#------------------------------------------------------------
+
+
+#-------- Mapa por comunidades: valores absolutos ------------
+
+mapa<-readRDS('gadm36_ESP_1_sp.rds')
+#mapa <- mapa[mapa$NAME_1!="Islas Canarias",]
+
+data <- read.xlsx('total-infrac-com.xlsx', sheetIndex = 1)
+
+infrac <- which(data[,2]!="<NA>")
+infrac <- infrac[3:(length(infrac)-1)]
+
+datos <- as.numeric(as.vector(
+  data[infrac[c(1:5,6:(length(infrac)-1))],2]))
+datos[length(datos)]<-
+  datos[length(datos)]+
+  as.numeric(as.vector(data[infrac[length(infrac)],2]))
+
+datosFinales<-data.frame(NAME_1=comunidades, Infracciones=datos)
+
+merged<- merge(mapa@data, datosFinales)
+
+correct.ordering <- match(mapa$NAME_1, merged$NAME_1)
+mapa@data <- merged[correct.ordering,]
+
+my.palette <- colorRampPalette(
+  brewer.pal(8, "Reds"))(max(mapa$Infracciones))
+spplot(mapa, "Infracciones", col.regions=my.palette,
+       main="Infracciones por comunidad año 2018")
+
+#-------- Mapa por comunidades: tasa de criminalidad -------
+
+#para juntar la poblacion de ceuta y melilla
+#pues en el mapa se consideran juntas
+
+pob18[length(pob18)-1]<-
+  pob18[length(pob18)-1]+pob18[length(pob18)]
+
+#ademas no coger el total de poblacion en EspaÃ±a
+pob18<-pob18[2:(length(pob18)-1)]
+
+#variable tasa por mil
+tasa<-1000*datosFinales$Infracciones/pob18
+
+tasaDatos<-data.frame(NAME_1=comunidades, Tasa=tasa)
+
+merged<- merge(mapa@data, tasaDatos)
+
+correct.ordering <- match(mapa$NAME_1, merged$NAME_1)
+mapa@data <- merged[correct.ordering,]
+
+my.palette <- colorRampPalette(
+  brewer.pal(8, "Reds"))(max(mapa$Tasa))
+spplot(mapa, "Tasa", col.regions=my.palette,
+       main="Número de infracciones por cada 1000
+       habitantes por comunidad en el año 2018")
+
+
+
+```
+
+## - Tabla valores medios infracciones 2016-2018
+
+```{r valoresmedios}
+
+#=========Tabla valores medios infracciones 2016-2018============
+
+d18 <- read.xlsx('total-infrac-com.xlsx', sheetIndex = 1)
+d1617 <- read.xlsx('total-infrac-com-1617.xlsx', sheetIndex = 1)
+
+infrac18 <- which(d18[,2]!="<NA>")
+infrac18 <- infrac18[2:(length(infrac18)-1)]
+
+aux18 <- as.numeric(as.vector(d18[infrac18,2]))
+
+dfin18<-data.frame(com=d18[infrac18-1,1], Infracciones18=aux18)
+
+infrac1617 <- which(d1617[,2]!="<NA>")
+infrac1617 <- infrac1617[2:(length(infrac1617)-1)]
+
+aux16 <- as.numeric(as.vector(d1617[infrac1617,2]))
+aux17 <- as.numeric(as.vector(d1617[infrac1617,3]))
+
+dfin1617<-data.frame(com=d1617[infrac1617-1,1],
+                     Infracciones16=aux16,Infracciones17=aux17)
+    
+unidas<- merge(dfin1617,dfin18)     
+
+#medias por comunidad
+
+unidas<-cbind(unidas,apply(unidas[,c(2,3,4)],1,sum))
+colnames(unidas)<-c("com", "Infracciones16", "Infracciones17",
+                    "Infracciones18", "Total")
+unidas<-cbind(unidas, unidas$Total/3)
+colnames(unidas)<-c("com", "Infracciones16", "Infracciones17",
+                    "Infracciones18", "Total", "Media")
+
+unidas
+
+
+
+
+```
+
+## - Barplots: tipología, sexo y edad
+
+```{r barplot}
+
+#===================== Bar Plots ==============================
+
+
+#---------------Barplot: Por tipologia  ----------------
+
+data <- read.xlsx('total-tiposInfrac-18.xlsx', sheetIndex = 1)
+
+tipos <- which(data[,2]!="<NA>")
+tipos <- tipos[2:(length(tipos))]
+
+#-->comentados para realizarlo sin hurtos y sin resto de delitos
+
+auxTipos <- as.numeric(as.vector(data[tipos,2]))
+#auxTipos <- as.numeric(as.vector(data[tipos[c(1:10,12,13)],2]))
+
+names <- c("A: Asesinatos consumados",
+           "B: Asesinatos en grado tentativa",
+           "C: Delitos de lesiones", "D: Secuestro",
+           "E: Delitos contra la libertad e indemnidad sexual",
+           "F: Agresion sexual con penetración",
+           "G: Resto de delitos contra la libertad",
+           "H: Robos con violencia e intimidación",
+           "I: Robos con fuerza","J: Robos en domicilios",
+           "K: Hurtos", "L: Sustracción de vehículos",
+           "M: Tráfico de drogas",
+           "N: Resto de infracciones")
+
+#names <- c("A: Asesinatos consumados",
+#"B: Asesinatos en grado tentativa",
+#"C: Delitos de lesiones", "D: Secuestro", 
+#"E: Delitos contra la libertad e indemnidad sexual",
+#"F: Agresion sexual con penetraciÃ³n",
+#"G: Resto de delitos contra la libertad",
+#"H: Robos con violencia e intimidaciÃ³n",
+#"I: Robos con fuerza","J: Robos en domicilios",
+#"K: SustracciÃ³n de vehÃ�culos","L: TrÃ¡fico de drogas")
+
+ind <- c("A","B","C","D","E","F","G","H","I","J","K","L","M","N")
+#ind <- c("A","B","C","D","E","F","G","H","I","J","K","L")
+
+finalTipos<-data.frame(ClasificaciÃ³n=names,
+                       NumInfr=auxTipos, Identificador=ind)
+
+finalTipos
+
+
+graf<-ggplot(data=finalTipos, 
+             aes(x=Identificador,
+                 y=NumInfr, fill=ClasificaciÃ³n)) + 
+  geom_bar(stat="identity", position="dodge")
+
+graf<-graf + 
+  ggtitle("Distribución de los delitos según su naturaleza") +
+  xlab("Tipos de infracciones") + 
+  ylab("Número de infracciones") +
+  theme(plot.title = element_text(hjust = 0.5, face="bold"))
+
+#con ggplotly se puede observar quÃ© tipos quieres ver, zoom, etc
+#ggplotly(graf)
+graf
+
+
+
+#-------------- barplot: distincion sexo y edad -----------------
+
+data <- read.xlsx('total-infracSexoEdad-18.xlsx', sheetIndex = 1)
+
+tipos <- which(data[,2]!="<NA>")
+tipos <- tipos[4:(length(tipos))]
+
+auxMasc <- as.numeric(as.vector(data[tipos,2]))
+auxFem <- as.numeric(as.vector(data[tipos,3]))
+
+edad<-c("14-17","18-30","31-40","41-64","MÃ¡s de 64")
+finalSex<-data.frame(Edad=edad, Masculino=auxMasc,
+                     Femenino=auxFem)
+
+sex<-c(rep("Masculino",5),rep("Femenino",5))
+infr<-c(finalSex$Masculino,finalSex$Femenino)
+
+fin<-data.frame(Sexo=sex, NumInfr=infr, 
+                Edad=rep(finalSex$Edad,2))
+
+fin
+
+
+grafSex<-ggplot(data=fin, aes(x=Sexo, y=NumInfr, fill=Edad)) + 
+  geom_bar(stat="identity", position="stack")
+
+grafSex<-grafSex + 
+  ggtitle("Distribución de los delitos según sexo y edad") +
+  xlab("Sexo") + ylab("Número de infracciones")  +
+  theme(plot.title = element_text(hjust = 0.5,face="bold"))  
+
+ggplotly(grafSex)
+
+```
+
+
+## - Diagrama de sankey: territorio y tipología
+
+
+```{r sankey}
+
+#===========Shankey: Territorio y tipologia ==============
+
+data <- read.xlsx('total-tiposInfracComSinResto-18.xlsx',
+                  sheetIndex = 1)
+
+comunidades<-c("Andalucía" , "Aragón", "Principado de Asturias",
+               "Islas Baleares", "Islas Canarias",                 
+               "Cantabria"    ,  "Castilla y León" ,
+               "Castilla-La Mancha"  ,      
+               "Cataluña"  , "Comunidad Valenciana",
+               "Extremadura", "Galicia", "Comunidad de Madrid",
+               "Región de Murcia","Comunidad Foral de Navarra",
+               "País Vasco" , "La Rioja" , "Ceuta" , "Melilla")
+
+nombresDelitos <- c("Asesinatos consumados",
+                    "Asesinatos en grado tentativa",
+                    "Delitos de lesiones", "Secuestro",
+                    "Delitos contra la libertad e indemnidad
+                    sexual","Agresion sexual con penetración",
+                    "Resto de delitos contra la libertad",
+                    "Robos con violencia e intimidación",
+                    "Robos con fuerza",
+                    "Robos en domicilios","Hurtos",
+                    "SustracciÃ³n de vehículos",
+                    "Tráfico de drogas")
+
+
+tipos <- which(data[,2]!="<NA>")
+tipos <- tipos[2:(length(tipos))]
+
+valoresCom_Tipo <- as.numeric(as.vector(data[tipos,2]))
+tasaPorCienMil<-
+  100000*valoresCom_Tipo/pob$pob18[2:length(pob$pob18)]
+
+tiposDelitos<-rep(nombresDelitos,each=length(comunidades))
+repComunidades<- rep(comunidades,length(nombresDelitos))
+
+links <- data.frame(
+  source=tiposDelitos, 
+  target=repComunidades, 
+  value=round(tasaPorCienMil,2),
+  ind=0
+)
+
+links
+
+#write.csv(links, file="tasaTiposCom-18.csv")
+
+#ordenar los grupos en funcion de la tasa 
+#para representarlos en orden creciente
+ordenado<- aggregate(links$value,list(links$source),sum) 
+ordenado$Group.1 <- ordenado$Group.1[order(ordenado$x)]
+ordenado <- dplyr::select(ordenado, -x) %>% mutate(ind=c(1:13))
+
+for(i in 1:length(ordenado$Group.1)){
+  links$ind[which(links$source==ordenado$Group.1[i])]<-
+    ordenado$ind[i]
+}
+
+links$source<- links$source[order(links$ind)]
+links$target<- links$target[order(links$ind)]
+links$value<- links$value[order(links$ind)]
+links$ind<-links$ind[order(links$ind)]
+
+
+# ---el codigo comentado para las tablas de agresiones sexuales--
+
+#orden de comunidades por agresion sexual
+#links$value[57+order(
+#  links$value[which(
+#    links$source=="Agresion sexual con penetraciÃ³n")])]
+
+#links$target[57+order(
+#  links$value[which(
+#    links$source=="Agresion sexual con penetraciÃ³n")])]
+
+#links$value[95+order(
+#  links$value[which(
+#    links$source==
+#      "Delitos contra la libertad e indemnidad sexual")])]
+
+#links$target[95+order(
+#  links$value[which(
+#    links$source==
+#      "Delitos contra la libertad e indemnidad sexual")])]
+
+
+nodes <- data.frame(
+  name=c(as.character(links$source), 
+         as.character(links$target)) %>% unique()
+)
+
+nodes$group <- as.factor(
+  c(rep("a",length(nombresDelitos)),rep("b",length(comunidades))))
+
+links$group <- as.factor(
+  c(rep(c("1","2","3","4","5","6","7","8","9","10","11","12","13"),
+        each=length(comunidades))))
+
+#para obtener los colores
+#brewer.pal(13, "Purples")
+
+my_color <- 'd3.scaleOrdinal() .domain(["a", "b","1","2","3","4","5","6","7","8","9","10","11","12","13"]) 
+.range(["#69b3a2", "steelblue", "#FCFBFD" ,"#EFEDF5", "#DADAEB", "#BCBDDC", "#BCBDDC" ,"#BCBDDC", "#BCBDDC", "#BCBDDC", "#9E9AC8", "#807DBA", "#6A51A3", "#54278F", "#3F007D"])'
+
+links$IDsource <- match(links$source, nodes$name)-1 
+links$IDtarget <- match(links$target, nodes$name)-1
+
+p <- sankeyNetwork(Links = links, Nodes = nodes,
+                   Source = "IDsource", Target = "IDtarget",
+                   Value = "value",units="delitos/100.000hab",
+                   NodeID = "name",
+                   colourScale=my_color, LinkGroup = "group",
+                   NodeGroup="group",
+                   iterations=0)
+
+p
+
+
+
+
+
+```
+
+## - Boxplot MENAS
+
+
+```{r menas}
+
+
+#============= Boxplot MENAS =========================
+
+
+comunidades<-c("Andalucía" ,"Aragón", "Principado de Asturias",
+               "Islas Baleares", "Islas Canarias",                 
+               "Cantabria"    ,  "Castilla y León" , 
+               "Castilla-La Mancha"  ,      
+               "Cataluña"  , "Comunidad Valenciana",
+               "Extremadura", "Galicia", "Comunidad de Madrid",
+               "Región de Murcia","Comunidad Foral de Navarra",
+               "País Vasco" , "La Rioja" , "Ceuta" , "Melilla")
+
+pobMenores<-read.xlsx('poblacionMenoresNacioCom-18.xlsx',
+                      sheetIndex = 1)
+
+indice <- which(pobMenores[,2]!="<NA>")
+indice <- indice[4:(length(indice))]
+
+auxPobEsp<- as.numeric(as.vector(pobMenores[indice,2]))
+auxPobExtr <- as.numeric(as.vector(pobMenores[indice,3]))
+
+aux_pob<-data.frame(Españoles=auxPobEsp,
+                    Extranjeros=auxPobExtr,
+                    ident=rep(1:19, each=4))
+
+pob_menores18<- data.frame(
+  Españoles=tapply(aux_pob$Españoles,aux_pob$ident,sum),
+  Extranjeros=tapply(aux_pob$Extranjeros,aux_pob$ident,sum))
+
+data <- read.xlsx('total-infrComunExtr-18.xlsx', sheetIndex = 1)
+
+ind <- which(data[,2]!="<NA>")
+ind <- ind[4:(length(ind))]
+
+auxEsp<- as.numeric(as.vector(data[ind,2]))
+auxExtr <- as.numeric(as.vector(data[ind,3]))
+
+delitos<-c(auxEsp,auxExtr)
+nacionalidad <- c(rep("Español",19),rep("Extranjero",19))
+
+dataExtr<- data.frame(Comunidades=comunidades,
+                      Nacionalidad=nacionalidad,
+                      Infracciones=delitos)
+
+dataExtr<-dataExtr %>%
+  mutate(Poblacion=
+           c(pob_menores18$Españoles,pob_menores18$Extranjeros))%>%
+  mutate(Tasa=Infracciones*1000/Poblacion)
+
+
+dataExtr
+
+#Infracciones totales -> No es muy util
+grafExtr<-
+  ggplot(dataExtr, aes(x=Nacionalidad,
+                               y=Infracciones,
+                               color=Nacionalidad)) +
+  geom_boxplot()
+
+ggplotly(grafExtr + geom_jitter(shape=16,
+                                position=position_jitter(0.1)) +
+  ggtitle("Distribución de los delitos
+          para menores según su nacionalidad") +
+  theme(plot.title = element_text(hjust = 0.5,face="bold")))
+
+
+#Tasa infracciones por mil menores 
+
+grafExtr<-
+  ggplot(dataExtr[1:(dim(dataExtr)[1]-2),],
+         aes(x=Nacionalidad, y=Tasa, color=Nacionalidad)) +
+  geom_boxplot()
+
+grafExtr<-
+  ggplot(dataExtr[1:(dim(dataExtr)[1]-2),],
+         aes(x=Nacionalidad, y=Tasa, color=Nacionalidad,
+             text=paste(
+               "Tasax1000:", round(Tasa,2),
+               "<br>Nacionalidad:",Nacionalidad,
+               "<br>Comunidad:",Comunidades))) +
+  geom_boxplot()
+
+grafExtr<-
+  grafExtr + 
+  geom_jitter(shape=16, position=position_jitter(0.1)) + 
+  ggtitle("Distribución de la tasa de delincuencia
+          para menores según su nacionalidad") +
+  theme(plot.title = element_text(hjust = 0.5,face="bold"))
+
+ggplotly(grafExtr,tooltip = "text")
+
+
+# TABLA: obtencion de las respectivas poblaciones y tasas
+pobMenoresEsp<-sum(pob_menores18$Españoles)
+pobMENAS<-sum(pob_menores18$Extranjeros)
+infEsp<- sum(dataExtr$Infracciones[1:19])
+infExt<-sum(dataExtr$Infracciones[20:38])
+tasaEsp<-1000*infEsp/pobMenoresEsp
+tasaExt<-1000*infExt/pobMENAS
+
+
+
+```
+
+
+
+## - Barplot: comparativa tasa de paro y criminalidad
+
+```{r barplotcompuesto}
+
+
+#----poblacion----
+
+comunidades<-c("Andalucía" ,"Aragón", "Principado de Asturias",
+               "Islas Baleares", "Islas Canarias",
+               "Cantabria"    ,  "Castilla y León" ,          
+               "Castilla-La Mancha"  ,      
+               "Cataluña"  , "Comunidad Valenciana",
+               "Extremadura", "Galicia", "Comunidad de Madrid",
+               "Región de Murcia","Comunidad Foral de Navarra",
+               "País Vasco" , "La Rioja" , "Ceuta" , "Melilla")
+
+poblacion<-read.xlsx('poblacionComSexo-18.xlsx', sheetIndex = 1)
+
+aux <- which(poblacion[,2]!="<NA>")
+aux <- aux[3:(length(aux))]
+
+pobMasc <- as.numeric(as.vector(poblacion[aux,2]))
+pobFem <- as.numeric(as.vector(poblacion[aux,3]))
+
+
+#----datos infracciones---
+
+data <- read.xlsx('total-infracSexoEdadCom-18.xlsx',
+                  sheetIndex = 1)
+
+tipos <- which(data[,2]!="<NA>")
+tipos <- tipos[3:(length(tipos))]
+
+auxMasc <- as.numeric(as.vector(data[tipos,2]))
+auxFem <- as.numeric(as.vector(data[tipos,3]))
+
+edad<-rep(c("14-17","18-30","31-40","41-64","MÃ¡s de 64"),19)
+sex<-c(rep("Masculino",5*19),rep("Femenino",5*19))
+
+dfComSexoEdad<-data.frame(Edad=edad, Sexo=sex,
+                          Infracciones=c(auxMasc,auxFem),
+                          Indicador=as.factor(rep(c(1:19),each=5))
+)
+
+infMasc<- dfComSexoEdad %>% filter(Sexo=="Masculino")
+tasaMasc<-
+  1000*tapply(infMasc$Infracciones, infMasc$Indicador,sum)/pobMasc
+
+infFem<- dfComSexoEdad %>% filter(Sexo=="Femenino")
+tasaFem<-
+  1000*tapply(infFem$Infracciones, infFem$Indicador,sum)/pobFem
+
+#========== datos paro==============
+
+datos<-read.xlsx('tasaParoSexo-18.xlsx', sheetIndex = 1)
+
+tipos <- which(datos[,2]!="<NA>")
+tipos <- tipos[4:(length(tipos))]
+
+auxMasc <- (as.numeric(as.vector(datos[tipos,2])) +
+              as.numeric(as.vector(datos[tipos,3])) + 
+              as.numeric(as.vector(datos[tipos,4])) +
+              as.numeric(as.vector(datos[tipos,5])))/4
+auxFem <- (as.numeric(as.vector(datos[tipos,6])) +
+             as.numeric(as.vector(datos[tipos,7]))+
+             as.numeric(as.vector(datos[tipos,8])) +
+             as.numeric(as.vector(datos[tipos,9])))/4
+
+
+
+
+#====================Barplot compuesto==========================
+
+
+Sexo<-rep(rep(c("Masculino","Femenino"),each=19),2)
+valores<-c(tasaMasc,tasaFem, auxMasc, auxFem )
+
+data=data.frame(
+  Comunidad=rep(comunidades,4),
+  Sexo=Sexo ,
+  Tasa=round(valores,2),
+  Clasificacion=
+    rep(c("Tasa criminalidad", "Tasa de paro"), each=19*2))
+
+data
+
+#----interactivo------
+
+p1<-
+  ggplot(data %>% filter(Sexo=="Masculino"),
+         aes(fill=Clasificacion, y=Tasa,
+             x=reorder(Comunidad,-Tasa),
+             text=paste("Tipo:",Clasificacion,
+                        "<br>Comunidad:",Comunidad,
+                        "<br>Tasa:",Tasa," delitos/1.000hab"))) +
+  geom_bar(position="dodge", stat="identity") +
+  coord_flip() + 
+  ggtitle("Relación paro/criminalidad por sexo y comunidad")+
+  theme(plot.title = element_text(hjust = 0.5, face="bold"))+
+  labs(fill="")
+
+aa<-c("Cataluña","País Vasco","Comunidad Foral de Navarra",
+      "Cantabria", "Castilla y León", "Aragón", "Galicia",
+      "La Rioja", "Principado de Asturias",
+      "Comunidad de Madrid",
+      "Castilla-La Mancha", "Región de Murcia",
+      "Comunidad Valenciana", "Extremadura", "Islas Baleares",
+      "Andalucía", "Islas Canarias", "Ceuta","Melilla")
+
+aa<-aa[length(aa):1]
+auxiliar<-data.frame(Comunidad=aa)
+auxFem<-data %>% filter(Sexo=="Femenino")
+
+auxFinal<-inner_join(auxiliar, auxFem)
+auxFinal$Comunidad <- 
+  factor(auxFinal$Comunidad, levels = auxiliar$Comunidad)
+
+p2<-ggplot(auxFinal,
+           aes(fill=Clasificacion, y=Tasa, x=Comunidad,
+               text=paste("Tipo:",Clasificacion,
+                          "<br>Comunidad:",Comunidad,
+                          "<br>Tasa:",Tasa," delitos/1.000hab")))+
+  geom_bar(position="dodge", stat="identity") +
+  coord_flip()+
+  labs(fill="")
+
+
+
+pFinal<-subplot(ggplotly(p1,tooltip="text"),
+                style(ggplotly(p2,tooltip="text"),
+                      showlegend=FALSE ),
+                shareY = TRUE, titleY = FALSE,heights = 0.9)
+
+
+pFinal %>% 
+  layout(annotations = list(
+  list(x = 0.2 , y = 1, text = "Hombre",
+       showarrow = F, xref='paper', yref='paper'),
+  list(x = 0.8 , y =1, text = "Mujer",
+       showarrow = F, xref='paper', yref='paper')))
+
+
+
+```
+
+
+## - Gráfico animado
+
+
+```{r animado}
+
+#=========poblacion reclusa=========================
+
+datos<-read.xlsx('Estadistica diciembre 2018.xlsx',
+                 sheetIndex = 3)
+a18<-as.numeric(as.vector(datos[3:21,4]))
+
+datos<-read.xlsx('Estadistica diciembre 2017.xlsx',
+                 sheetIndex = 3)
+a17<-as.numeric(as.vector(datos[3:21,4]))
+
+datos<-read.xlsx('Estadistica diciembre 2016.xlsx',
+                 sheetIndex = 3)
+a16<-as.numeric(as.vector(datos[3:21,4]))
+
+datos<-read.xlsx('Estadistica diciembre 2015.xlsx',
+                 sheetIndex = 3)
+a15<-as.numeric(as.vector(datos[3:21,4]))
+
+datos<-read.xlsx('Estadistica diciembre 2014.xlsx',
+                 sheetIndex = 3)
+a14<-as.numeric(as.vector(datos[3:21,4]))
+
+datos<-read.xlsx('Estadistica diciembre 2013.xlsx',
+                 sheetIndex = 3)
+a13<-as.numeric(as.vector(datos[3:21,4]))
+
+datos<-read.xlsx('Estadistica diciembre 2012.xlsx',
+                 sheetIndex = 3)
+a12<-as.numeric(as.vector(datos[3:21,4]))
+
+datos<-read.xlsx('Estadistica diciembre 2011.xlsx',
+                 sheetIndex = 3)
+a11<-as.numeric(as.vector(datos[3:21,4]))
+
+datos<-read.xlsx('Estadistica diciembre 2010.xlsx',
+                 sheetIndex = 3)
+a10<-as.numeric(as.vector(datos[3:21,4]))
+
+datos<-read.xlsx('Estadistica diciembre 2009.xlsx',
+                 sheetIndex = 3)
+a09<-as.numeric(as.vector(datos[3:21,4]))
+
+datos<-read.xlsx('Estadistica diciembre 2008.xlsx',
+                 sheetIndex = 3)
+a08<-as.numeric(as.vector(datos[3:21,4]))
+
+datos<-read.xlsx('Estadistica diciembre 2007.xlsx',
+                 sheetIndex = 3)
+a07<-as.numeric(as.vector(datos[3:21,4]))
+
+datos<-read.xlsx('Estadistica diciembre 2006.xlsx',
+                 sheetIndex = 3)
+a06<-as.numeric(as.vector(datos[3:21,4]))
+
+
+poblacionReclusa<- data.frame(Año18= a18, Año17=a17, Año16=a16,
+                              Año15=a15, Año14=a14, Año13=a13,
+                              Año12=a12, Año11=a11, Año10=a10,
+                              Año09=a09, Año08=a08,Año07=a07,
+                              Año06=a06)
+
+pRec<-as.vector(t(poblacionReclusa))
+
+#======poblacion comunidad
+
+datos<-read.xlsx('2915.xlsx', sheetIndex = 1)
+
+poblacionTotal<-as.numeric(as.vector(t(datos[8:26,2:14])))
+
+
+
+#======= PIB per capita ===========================
+
+datos<-read.xlsx('pr_cre.xlsx', sheetIndex = 3)
+
+#which(datos[4,]==2006)
+#which(datos[4,]=="2018 (A)")
+secuencias<- seq(from=25, to=73, by=4)
+pib<-as.numeric(
+  as.vector(
+    t(
+      datos[
+        c(6,15,19,20,21,24,25,35,41,46,
+          50,53,58,59,60,61,65,66,67),secuencias])))
+
+
+#=====datos finales
+
+comunidad<-c("Andalucía" ,"Aragón", "Principado de Asturias",
+             "Islas Baleares", "Islas Canarias",                 
+               "Cantabria",  "Castilla y León" ,
+             "Castilla-La Mancha"  ,"Cataluña"  ,
+             "Comunidad Valenciana", "Extremadura", "Galicia",
+             "Comunidad de Madrid", "Región de Murcia",
+             "Comunidad Foral de Navarra", "País Vasco" ,
+             "La Rioja" , "Ceuta" , "Melilla")
+
+
+datosFin<-data.frame(Reclusos=pRec,
+                     Poblacion=poblacionTotal,
+                    Año=rep(c(2018:2006),19),
+                    Comunidad=rep(comunidad, each=13)
+)
+
+datosFin2<-data.frame(PIB=pib,
+                      Año=rep(c(2006:2018),19),
+                      Comunidad=rep(comunidad, each=13))
+
+datosFinales<-merge(datosFin, datosFin2)
+
+datosFinales
+
+n <- 19
+qual_col_pals = 
+  brewer.pal.info[brewer.pal.info$category == 'qual',]
+
+col_vector = 
+  unlist(mapply(brewer.pal, qual_col_pals$maxcolors,
+                rownames(qual_col_pals)))
+
+colores<-sample(col_vector, n)
+
+datosFinales <- datosFinales %>% mutate(Color=rep(colores,13))
+
+
+
+p <- datosFinales %>%
+  plot_ly(
+    x = ~PIB, 
+    y = ~Reclusos, 
+    size = ~Poblacion, 
+    color=~Comunidad,
+    frame = ~Año, 
+    text = paste("Comunidad:",datosFinales$Comunidad,
+                 "<br>Población:", datosFinales$Poblacion,
+                 "<br>Población reclusa:",datosFinales$Reclusos,
+                 "<br>PIB:",datosFinales$PIB), 
+    hoverinfo = "text",
+    type = 'scatter',
+    mode = 'markers'
+  ) %>%
+  layout(
+    xaxis = list(
+      type = "log"
+    ),
+    title="Evolución económica y delictiva por comunidad"
+  )
+
+p %>%  animation_opts(
+  1000, easing = "elastic", redraw = FALSE
+)
+
+
+```
+
+
+## - Gráfico evolución infracciones por edad y sexo
+
+```{r lineas}
+
+datos<-read.xlsx('datosSexEdadYear-Modelos.xlsx', sheetIndex = 1)
+
+ind<- which(datos[,2]!="<NA>")
+
+infr <- as.numeric(as.vector(datos[ind[3:length(ind)],2]))
+sexo<- as.factor(rep(c("Masculino", "Femenino"),9*5))
+edad<-as.factor(
+  rep(rep(
+    c("14-17","18-30","31-40","41-64","MÃ¡s de 64"),each=2), 9))
+anio<-(rep
+       (c(2018,2017,2016,2015,2014,2013,2012,2011,2010), each=10))
+
+dataProc <- data.frame(Infracciones=infr,
+                       Sexo=sexo,
+                       Edad=edad,
+                       Año=anio)
+
+
+
+#================Grafico descriptivo =======================
+
+
+#----interactivo-----
+
+graf <- ggplot(dataProc, aes(Año, Infracciones, color=Edad)) +
+  geom_point(aes(text=paste("Año:", Año,
+                            "<br>Sexo:",Sexo,
+                            "<br>Edad:",Edad,
+                            "<br>Número de infracciones:",
+                            Infracciones)))
+
+graf<-graf + stat_smooth(se =FALSE) + facet_wrap(~ Sexo) +
+  ggtitle("Distribución de los delitos según año, sexo y edad") +
+  theme(plot.title = element_text(hjust = 0.5,face="bold"))
+
+ggplotly(graf,tooltip="text")
+
+
+
+```
+
+# - Técnicas descriptivas avanzadas
+
+## - Análisis de correspondencias
+
+
+```{r correspondencias}
+
+#==========Analisis de correspondencias============
+
+
+comunidad<-c("Andalucia" , "Aragon", "Principado de Asturias",
+             "Islas Baleares", "Islas Canarias",                 
+             "Cantabria"    ,  "Castilla y Leon" ,
+             "Castilla La Mancha"  ,      
+             "Catalunia"  , "Comunidad Valenciana", "Extremadura",
+             "Galicia", "Comunidad de Madrid",
+             "Region de Murcia","Comunidad Foral de Navarra",
+             "Pais Vasco" , "La Rioja" , "Ceuta" , "Melilla")
+
+
+#----por edad-----
+
+datos<-read.xlsx('datosEdadCom-AC.xlsx', sheetIndex = 1)
+
+ind<- which(datos[,2]!="<NA>")
+
+prim <- as.numeric(as.vector(datos[ind[4:length(ind)],2]))
+seg <- as.numeric(as.vector(datos[ind[4:length(ind)],3]))
+ter <- as.numeric(as.vector(datos[ind[4:length(ind)],4]))
+cuart <- as.numeric(as.vector(datos[ind[4:length(ind)],5]))
+quin <- as.numeric(as.vector(datos[ind[4:length(ind)],6]))
+
+
+dataACEdad<- data.frame(E14_17=prim,
+                        E18_30=seg,
+                        E31_40=ter,
+                        E41_64=cuart,
+                        E64_mas=quin)
+
+#tabla para ver los totales
+#dataACEdad$Total <- apply(dataACEdad,1,sum)
+#dataACEdad<-
+#as.data.frame(rbind(dataACEdad,apply(dataACEdad,2,sum)))
+#rownames(dataACEdad)<-c(comunidad,"Total")
+
+rownames(dataACEdad)<-comunidad
+
+dataACEdad
+
+propor_contig_edad<-
+  as.data.frame(prop.table(as.matrix(dataACEdad[1:19,1:5])))
+
+ac<-CA(dataACEdad)
+#summary(ac)
+#get_eigenvalue(ac)
+
+#grafico de contribucion de cada dimension
+#interactivo
+ggplotly(fviz_screeplot(ac, addlabels=TRUE) +
+           geom_hline(yintercept=33.33, linetype=2, color="red") +
+           theme(plot.title = element_text(hjust =
+                                             0.5,face="bold")))
+
+
+#contribuciones filas y columnas a las dimensiones 1 y 2
+#interactivo
+rdim1<-ggplotly(fviz_contrib(ac, choice = "row", axes = 1) +
+                  ggtitle("Contribución perfiles fila")+
+                  theme(plot.title = element_text(hjust = 0.5,
+                                                  face="bold")))
+
+#interactivo
+rdim2<-ggplotly(fviz_contrib(ac, choice = "row", axes = 2)+
+                  ggtitle("Contribución perfiles fila")+
+                  theme(plot.title = element_text(hjust = 0.5,
+                                                  face="bold")))
+
+
+filas<-subplot(rdim1, rdim2,
+                  shareY = TRUE, heights = 0.9)
+
+filas %>% layout(annotations = list(
+  list(x = 0.2 , y = 1, text = "Dimension 1", showarrow = F,
+       xref='paper', yref='paper'),
+  list(x = 0.8 , y =1, text = "Dimension 2", showarrow = F,
+       xref='paper', yref='paper'))
+)
+
+#interactivo
+cdim1<-ggplotly(fviz_contrib(ac, choice = "col", axes = 1) +
+                  ggtitle("Contribución perfiles columna")+
+                  theme(plot.title = element_text(hjust = 0.5,
+                                                  face="bold")))
+
+#interactivo
+cdim2<-ggplotly(fviz_contrib(ac, choice = "col", axes = 2) +
+                  ggtitle("Contribución perfiles columna")+
+                  theme(plot.title = element_text(hjust = 0.5,
+                                                  face="bold")))
+
+columnas<-subplot(cdim1, cdim2,
+               shareY = TRUE, heights = 0.9)
+
+columnas %>% layout(annotations = list(
+  list(x = 0.2 , y = 1, text = "Dimension 1", showarrow = F,
+       xref='paper', yref='paper'),
+  list(x = 0.8 , y =1, text = "Dimension 2", showarrow = F,
+       xref='paper', yref='paper'))
+)
+
+
+#representacion categorias
+#fviz_ca_col(ac)
+#fviz_ca_row(ac, repel = TRUE)
+fviz_ca_biplot(ac, repel = TRUE)+
+  ggtitle("Biplot analisis de correspondencias")+
+  theme(plot.title = element_text(hjust = 0.25, face="bold"))
+
+
+#----por tipologia (NO SE HA INCLUIDO EN LA MEMORIA)-----
+
+
+data <- read.xlsx('total-tiposInfracComSinResto-18.xlsx',
+                  sheetIndex = 1)
+
+nombresDelitos <- c("Asesinatos consumados",
+                    "Asesinatos en grado tentativa", 
+                    "Delitos de lesiones", "Secuestro",
+                    "Delitos contra la libertad e indemnidad sexual", "Agresion sexual con penetracion",
+                    "Resto de delitos contra la libertad",
+                    "Robos con violencia e intimidacion",
+                    "Robos con fuerza","Robos en domicilios",
+                    "Hurtos", "Sustraccion de vehiculos",
+                    "Trafico de drogas")
+
+
+tipos <- which(data[,2]!="<NA>")
+tipos <- tipos[2:(length(tipos))]
+
+valoresCom_Tipo <- as.numeric(as.vector(data[tipos,2]))
+
+
+final<-matrix(nrow = 19, ncol = 13 )
+i<-1
+z<-1
+while(i < length(valoresCom_Tipo)){
+  
+  
+  final[,z]<-valoresCom_Tipo[i:(18+i)]
+  
+  #final<-cbind(final,aux)
+  i<-i+19
+  z<-z+1
+  
+}
+
+final<-as.data.frame(final)
+colnames(final)<-nombresDelitos
+rownames(final)<-comunidad
+
+
+acTipo<-CA(final)
+#summary(acTipo)
+
+fviz_ca_biplot(acTipo, repel = TRUE)+
+  ggtitle("Biplot analisis de correspondencias")+
+  theme(plot.title = element_text(hjust = 0.25, face="bold"))
+
+```
+
+
+
+## - Análisis de componentes principales
+
+
+```{r acp}
+
+#===========Analisis de componentes principales ============
+
+
+datos<-read.csv("tasaTiposCom-18.csv", header=T)
+
+finalACP<-matrix(nrow = 19, ncol = 13 )
+i<-1
+z<-1
+while(i < length(datos$value)){
+  
+  
+  finalACP[,z]<-datos$value[i:(18+i)]
+  
+  #final<-cbind(final,aux)
+  i<-i+19
+  z<-z+1
+  
+}
+
+finalACP<-as.data.frame(finalACP)
+colnames(finalACP)<-nombresDelitos
+rownames(finalACP)<-comunidad
+
+finalACP
+
+pca <- prcomp(finalACP, scale = TRUE)
+#summary(pca)
+#pca$rotation
+
+pca$rotation <- -pca$rotation
+pca$x        <- -pca$x
+biplot(x = pca, scale = 0, cex = 0.6, col = c("blue4", "brown3"))
+
+#screeplot
+#interactivo
+ggplotly(fviz_screeplot(pca, addlabels=TRUE) +
+           geom_hline(yintercept=33.33, linetype=2, color="red") +
+           theme(plot.title = element_text(hjust =
+                                             0.5,face="bold")))
+
+
+#nube de variables bonito
+fviz_pca_var(pca, col.var = "cos2", 
+             geom.var = "arrow", 
+             labelsize = 2, 
+             repel = FALSE)
+
+
+#biplot 3d interactivo
+pca3d(pca,show.ellipses=TRUE,
+      ellipse.ci=0.75, show.plane=TRUE, biplot=TRUE,fancy=TRUE,
+      title="Representación 3D de las componentes principales",
+      radius = 1.25)
+
+#obtener el html del viewer
+#rgl::writeWebGL("pca3D.html")
+
+#para obener nube de variables de forma alternativa
+a<-PCA(finalACP, graph = FALSE)
+#summary(a)
+plot(a,choix="var")
+
+
+
+
+
+```
+
+### - Clasificación K-Medias
+
+```{r kmedias}
+
+#=============== Clasificacion: KMEANS ===========
+
+#mirar suma de cuadrado para ver el número de cluster
+
+wss <- (nrow(finalACP)-1)*sum(apply(finalACP,2,var))
+
+for (i in 2:13){
+  wss[i] <- sum(kmeans(finalACP,centers=i)$tot.withinss)
+}
+
+aux<-data.frame(Clusters=c(1:13),
+                WSEE=wss)
+
+#con el plot se ve que se cogen 3 cluster, cuando se ve el codo
+ggplotly(
+  ggplot(aux, aes(x=Clusters, y=WSEE)) +
+    geom_point() +
+    geom_line() +
+    ggtitle("Total within-clusters SSE / Numero de clusters")+
+    theme(plot.title = element_text(hjust = 0.5, face="bold")))
+
+
+comp<- pca$x[,1:3]
+
+k <- kmeans(comp, 3, nstart=25, iter.max=1000)
+
+comp<-as.data.frame(comp)
+comp<- comp %>% 
+  mutate(size=round(apply(finalACP,1, mean),2)) %>% 
+  mutate(Comunidad= as.factor(rownames(finalACP))) %>% 
+  mutate(Cluster=as.factor(k$cluster))
+
+colors <- c('#965F8A', '#FF7070', '#C61951')
+fig <- 
+  plot_ly(comp, x = ~PC1, y = ~PC2, z = ~PC3,
+          color = ~Cluster, size = ~size, colors = colors,
+               marker = list(symbol = 'circle',
+                             sizemode = 'diameter'),
+          sizes = c(5, 150),
+          text = ~paste('Comunidad:', Comunidad,
+                        '<br>Tasa media criminalidad:', size,
+                        '<br>Cluster:', Cluster))
+
+fig <- fig %>% 
+  layout(title = 'Clasificación comunidades K-Medias',
+         scene = list(
+           xaxis = list(title = 'PC1',
+                        gridcolor = 'rgb(255, 255, 255)',
+                        zerolinewidth = 1,ticklen = 5,
+                        gridwidth = 2),
+           yaxis = list(title = 'PC2',
+                        gridcolor = 'rgb(255, 255, 255)',
+                        zerolinewidth = 1,ticklen = 5,
+                        gridwith = 2),
+           zaxis = list(title = 'PC3',
+                        gridcolor = 'rgb(255, 255, 255)',
+                        zerolinewidth = 1,ticklen = 5,
+                        gridwith = 2)),
+                      paper_bgcolor = 'rgb(243, 243, 243)',
+                      plot_bgcolor = 'rgb(243, 243, 243)')
+
+fig
+
+
+
+```
+
+
+# - Fase de modelado
+
+## - Normalidad y ANOVA
+
+```{r anova}
+
+datos<-read.xlsx('datosSexEdadYear-Modelos.xlsx', sheetIndex = 1)
+
+ind<- which(datos[,2]!="<NA>")
+
+infr <- as.numeric(as.vector(datos[ind[3:length(ind)],2]))
+sexo<- as.factor(rep(c("Masculino", "Femenino"),9*5))
+edad<-as.factor(
+  rep(rep(
+    c("14-17","18-30","31-40","41-64","MÃ¡s de 64"),each=2), 9))
+anio<-(rep(
+  c(2018,2017,2016,2015,2014,2013,2012,2011,2010), each=10))
+
+dataProc <- data.frame(Infracciones=infr,
+                       Sexo=sexo, Edad=edad,
+                       Año=anio)
+
+dataProc
+
+attach(dataProc)
+
+
+#=============normalidad =====================
+
+library(nortest)
+
+lillie.test(Infracciones)
+ks.test(Infracciones, pnorm ,
+        mean(Infracciones), sd(Infracciones))
+
+#graficos normalidad respuesta
+grafQQ<-ggplot(dataProc, aes(sample = Infracciones)) +
+  stat_qq() +
+  stat_qq_line() +
+  ggtitle("Normalidad de la variable objetivo") +
+  theme(plot.title = element_text(hjust = 0.5,face="bold"))
+
+grafQQ
+
+#ggplotly(grafQQ)
+
+#graficos normalidad respuesta por grupos sexo
+grafQQsexo<-ggplot(dataProc, 
+                   aes(sample = Infracciones,
+                       colour=Sexo, text=paste("Sexo:", Sexo))) +
+  stat_qq() +
+  stat_qq_line() +
+  ggtitle("Normalidad de la variable objetivo por sexo") +
+  theme(plot.title = element_text(hjust = 0.5,face="bold"))
+
+ggplotly(grafQQsexo,tooltip = "text")
+
+
+#graficos normalidad respuesta por grupos edad
+grafQQedad<-ggplot(dataProc, 
+                   aes(sample = Infracciones, colour=Edad,
+                       text=paste("Edad:", Edad))) +
+  stat_qq() +
+  stat_qq_line() +
+  ggtitle("Normalidad de la variable objetivo por edad") +
+  theme(plot.title = element_text(hjust = 0.5,face="bold"))
+
+ggplotly(grafQQedad, tooltip = "text" )
+
+
+grafHist<-ggplot(data = dataProc, aes(x = Infracciones)) +
+  geom_histogram(aes(y = ..density.., fill = ..count..)) +
+  scale_fill_gradient(low = "#DCDCDC", high = "#7C7C7C") +
+  stat_function(fun = dnorm, colour = "firebrick",
+                args = list(mean = mean(dataProc$Infracciones),
+                            sd = sd(dataProc$Infracciones))) +
+  ggtitle("Histograma / Curva normal teÃ³rica") +
+  theme_bw()+
+  theme(plot.title = element_text(hjust = 0.5,face="bold"))
+
+#ggplotly(grafHist)
+grafHist
+
+#==========Modelo anova ===============
+
+anovaInfr <- aov(Infracciones~Sexo+Edad+Año, data=dataProc)
+
+#summary(anovaInfr)
+
+residuales<-data.frame(Residuo=anovaInfr$residuals,
+                       Ajustado=anovaInfr$fitted.values,
+                       Sexo=dataProc$Sexo,
+                       Edad=dataProc$Edad)
+
+grafResi<-ggplot(residuales, aes(x=Ajustado, y = Residuo)) +
+  geom_point(aes(color=Sexo)) +
+  geom_hline(yintercept = 0, lty=3) +
+  ggtitle("Gráfico de dispersión") +
+  theme(plot.title = element_text(hjust = 0.5,face="bold")) 
+
+ggplotly(grafResi)
+
+
+
+```
+
+
+## - Modelo de Poisson
+
+```{r poisson}
+
+datos<-read.xlsx('datosSexEdadYear-Modelos.xlsx', sheetIndex = 1)
+
+ind<- which(datos[,2]!="<NA>")
+
+infr <- as.numeric(as.vector(datos[ind[3:length(ind)],2]))
+sexo<- as.factor(rep(c("Masculino", "Femenino"),9*5))
+edad<-as.factor(
+  rep(rep(
+    c("14-17","18-30","31-40","41-64","MÃ¡s de 64"),each=2), 9))
+anio<-(rep(
+  c(2018,2017,2016,2015,2014,2013,2012,2011,2010), each=10))
+
+dataProc <- data.frame(Infracciones=infr,
+                       Sexo=sexo,
+                       Edad=edad,
+                       Año=anio)
+
+
+
+#================= GLM poisson =================================
+
+#modelos usando covariables indivuales -> HAY SOBREDISPERSION
+
+modSexo<- glm (Infracciones ~ Sexo,
+               family=poisson(link="log"),data = dataProc)
+
+summary(modSexo)
+
+
+modAño<- glm (Infracciones ~ Año, 
+              family=poisson(link="log"),data = dataProc)
+
+summary(modAño)
+
+modEdad<- glm (Infracciones ~ Edad,
+               family=poisson(link="log"),data = dataProc)
+
+summary(modEdad)
+
+#modelos covariables indivuales -> PALIANDO LA SOBREDISPERSION
+
+modSexoNB<-glm.nb(Infracciones ~ Sexo, link="log",
+                  data= dataProc)
+
+summary(modSexoNB)
+
+modEdadNB<-glm.nb(Infracciones ~ Edad, link="log",
+                  data= dataProc)
+
+summary(modEdadNB)
+
+modAñoNB<-glm.nb(Infracciones ~ Año, link="log",
+                 data= dataProc)
+
+summary(modAñoNB)
+
+#vemos que por separado son todas significativas salvo edad
+#aÃ±adimos Edad
+modSexoEdadNB<- glm.nb(Infracciones ~ Sexo + Edad,link="log",
+                       data= dataProc)
+
+summary(modSexoEdadNB)
+
+
+#aÃ±adimos aÃ±o
+modSexoEdadAñoNB<- 
+  glm.nb (Infracciones ~ Sexo + Edad + Año,link="log",
+          data= dataProc)
+
+summary(modSexoEdadAñoNB)
+
+#comparacion los 3 modelos
+anova(modSexoNB, modSexoEdadNB, modSexoEdadAñoNB)
+
+
+
+#manual (ejemplo)
+#chis<-2*(logLik(modSexoEdadAÃ±oNB)-logLik(modSexoEdadNB))
+#1-pchisq(chis[1],1)
+
+
+#============== Interacciones  ==============
+
+mod1 <- glm.nb(Infracciones ~ Año * Edad + Sexo , link="log",
+               data= dataProc)
+
+summary(mod1)
+
+#descartado
+mod2 <- glm.nb(Infracciones ~ Año + Edad * Sexo , link="log",
+               data= dataProc)
+
+summary(mod2)
+
+mod3 <- glm.nb(Infracciones ~ Edad + Año * Sexo , link="log",
+               data= dataProc)
+
+summary(mod3)
+
+mod4 <- glm.nb(Infracciones ~ Año * Edad * Sexo , link="log",
+               data= dataProc)
+
+summary(mod4)
+
+#descartamos mod2
+#del resto nos quedamos con mod3 que es el Ãºnico vÃ¡lido
+
+#anova(modSexoEdadAÃ±oNB, mod1)
+#anova(modSexoEdadAÃ±oNB, mod2)
+#anova(modSexoEdadAÃ±oNB, mod3)
+#anova(modSexoEdadAÃ±oNB, mod4)
+
+
+
+#==================MODELO ESCOGIDO: mod3 ==================
+
+#===== grafico coeficientes: Barplot horizontal==========
+
+auxDf<-data.frame(Estimacion=coef(mod3)[order(coef(mod3))],
+                  Covariable=c("Intercept","Edad +64",
+                               "Año*SexoMasculino",
+                               "Año","Edad41-64",
+                                "Edad31-40","Edad18-30",
+                                "SexoMasculino")) %>%
+  mutate(
+    Correlacion=ifelse(Estimacion>0,"Positiva","Negativa"))%>% 
+  arrange(Estimacion) %>% 
+  mutate(Covariable=factor(Covariable, levels = Covariable))
+
+p <- ggplot(auxDf, aes(x = Covariable, y = Estimacion)) +
+  geom_col(aes(fill = Correlacion), width = 0.7)
+
+p<- 
+  p+ coord_flip() + ggtitle("Relacciones covariables-respuesta")+
+  theme(plot.title = element_text(hjust=0.5))
+
+ggplotly(p)
+
+
+#=========predicciones y graficos correspondientes==========
+
+predicciones <- predict(mod3,type="link" ,se.fit =T)
+
+#grafico por aÃ±os
+auxAño<-
+  data.frame(pre=predicciones$fit, year=rep(c(18:10),each=10))
+
+auxAño<-
+  data.frame(
+    inf=tapply(log(dataProc$Infracciones), dataProc$Año, sum),
+    predichos = 
+      tapply(auxAño$pre, auxAño$year, sum), año=c(2010:2018))
+
+auxAño<-
+  data.frame(Infracciones=c(auxAño$inf,auxAño$predichos),
+             Año=rep(c(2010:2018),2),
+             ind=rep(c("Reales","Predichos"),each=9))
+
+graf <- ggplot(auxAño, aes(Año, Infracciones)) +
+  geom_line(aes(col=ind)) + geom_point(aes(col=ind)) 
+#+ geom_smooth(aes(col=ind))
+
+graf<-graf + ggtitle("Reales frente a predichos por año") +
+  labs(colour="") + ylab("Log(Infracciones)") +
+  theme(plot.title = element_text(hjust = 0.5,face="bold"))
+
+#ggplotly(graf)
+graf
+
+#========== residuales ===============
+
+resi<-data.frame(Residuo=resid(mod1),
+                 Ajustado=fitted(mod1),
+                 Edad=dataProc$Edad, Sexo=dataProc$Sexo)
+
+#distinguiendo por sexo
+grafResi<-
+  ggplot(resi, 
+         aes(x=Ajustado, y = Residuo,text=paste("Sexo:",Sexo,
+                              "<br>Edad:",Edad,
+                              "<br>Valor ajustado:",
+                              round(Ajustado,2),
+                              "<br>Residuo:",round(Residuo,2)))) +
+  geom_point(aes(color=Sexo)) +
+  geom_hline(yintercept = 0, lty=3) +
+  ggtitle("Gráfico de dispersión") +
+  theme(plot.title = element_text(hjust = 0.5,face="bold")) 
+
+ggplotly(grafResi,tooltip = "text")
+
+#colour=
+ggplot(resi, aes(sample = Residuo)) +
+  stat_qq() +
+  stat_qq_line() +
+  ggtitle("Normalidad de los residuales") +
+  theme(plot.title = element_text(hjust = 0.5,face="bold"))
+
+#=====Capacidad predictiva de mod3 ---> Validacion cruzada 10Fold
+
+folds<- createFolds(dataProc$Infracciones, k=10)
+
+tasaExito<-lapply(folds, function(x){
+  
+  entre<-dataProc[-x,]
+  test<-dataProc[x,]
+  mod<-glm.nb(Infracciones~Edad+Año*Sexo, link="log", data=entre)
+  predicc<-predict(mod, newdata=test, type="response")
+  aciertos<-0
+  for(i in 1:length(predicc)){
+    if(predicc[i]<test$Infracciones[i]*1.15 &&
+       predicc[i]>test$Infracciones[i]*0.85){
+      aciertos<-aciertos+1
+    }
+  }
+  return(aciertos/length(test$Infracciones))
+  
+})
+
+tasaMedia<-mean(as.numeric(tasaExito))
+
+df<-data.frame(Clasificacion=c("0-Fallos","1-Aciertos"),
+               Tasa=c(1-tasaMedia,tasaMedia))
+
+
+graf<-ggplot(df, aes(fill = Clasificacion, ymax = cumsum(Tasa),
+                     ymin = c(0, head(cumsum(Tasa), n=-1)),
+                     xmax = 2, xmin = 1)) +
+  geom_rect(color="white") + 
+  coord_polar(theta = "y",start=-pi/2) + xlim(c(0, 2)) +
+  ylim(c(0,2))
+
+graf + theme_void() + 
+  scale_fill_manual(values=c("#e67070", "#00ff00")) +
+  geom_text(aes(x=c(1.5,1.5), y=c(0.2,0.75),
+                label = percent(Tasa)), size=5) +
+  ggtitle("Porcentaje de acierto/error") +
+  theme(plot.title = element_text(hjust=0.55, size=20))
+
+
+
+```
+
+
+## - Redes neuronales recursivas
+
+### - Procesamiento
+
+```{r caca, eval=F}
+
+#====== Procesamiento de datos- Serie temporal ================
+
+#años 2018-2017
+c1.18.17<-read.xlsx('1cuatri-1817.xlsx', sheetIndex = 1)
+c2.18.17<-read.xlsx('2cuatri-1817.xlsx', sheetIndex = 1)
+c3.18.17<-read.xlsx('3cuatri-1817.xlsx', sheetIndex = 1)
+c4.18.17<-read.xlsx('4cuatri-1817.xlsx', sheetIndex = 1)
+
+ind<- which(c1.18.17[,2]!="<NA>")
+
+#cuatrimestres
+primerCuatri17<-
+  as.numeric(as.vector(c1.18.17[ind[2:length(ind)],2]))
+primerCuatri18<-
+  as.numeric(as.vector(c1.18.17[ind[2:length(ind)],3]))
+segundoCuatriAux17<-
+  as.numeric(as.vector(c2.18.17[ind[2:length(ind)],2]))
+segundoCuatriAux18<-
+  as.numeric(as.vector(c2.18.17[ind[2:length(ind)],3]))
+
+segundoCuatri17<-segundoCuatriAux17-primerCuatri17
+segundoCuatri18<-segundoCuatriAux18-primerCuatri18
+
+tercerCuatriAux17<-
+  as.numeric(as.vector(c3.18.17[ind[2:length(ind)],2]))
+tercerCuatriAux18<-
+  as.numeric(as.vector(c3.18.17[ind[2:length(ind)],3]))
+
+tercerCuatri17<-tercerCuatriAux17-segundoCuatriAux17
+tercerCuatri18<-tercerCuatriAux18-segundoCuatriAux18
+
+
+cuartoCuatriAux17<-
+  as.numeric(as.vector(c4.18.17[ind[2:length(ind)],2]))
+cuartoCuatriAux18<-
+  as.numeric(as.vector(c4.18.17[ind[2:length(ind)],3]))
+
+cuartoCuatri17<-cuartoCuatriAux17-tercerCuatriAux17
+cuartoCuatri18<-cuartoCuatriAux18-tercerCuatriAux18
+
+años1718<-
+  c(primerCuatri17,segundoCuatri17,tercerCuatri17,
+    cuartoCuatri17, primerCuatri18,
+    segundoCuatri18,tercerCuatri18,cuartoCuatri18)
+
+
+#años 2016-2015
+c1.16.15<-read.xlsx('1cuatri-1615.xlsx', sheetIndex = 1)
+c2.16.15<-read.xlsx('2cuatri-1615.xlsx', sheetIndex = 1)
+c3.16.15<-read.xlsx('3cuatri-1615.xlsx', sheetIndex = 1)
+c4.16.15<-read.xlsx('4cuatri-1615.xlsx', sheetIndex = 1)
+
+ind<- which(c1.16.15[,2]!="<NA>")
+
+#cuatrimestres
+ident<-c(rep(c(1:19),each=8))
+primerCuatri15<-
+  data.frame(
+    inf=as.numeric(
+      as.vector(c1.16.15[ind[2:length(ind)],2])),ident=ident)
+
+primerCuatri15<- 
+  tapply(primerCuatri15$inf,primerCuatri15$ident,sum)
+
+primerCuatri16<-
+  data.frame(
+    inf=as.numeric(
+      as.vector(c1.16.15[ind[2:length(ind)],3])), ident=ident)
+
+primerCuatri16<- 
+  tapply(primerCuatri16$inf,primerCuatri16$ident,sum)
+
+segundoCuatriAux15<-
+  data.frame(
+    inf=as.numeric(
+      as.vector(c2.16.15[ind[2:length(ind)],2])), ident=ident)
+segundoCuatriAux15<-
+  tapply(segundoCuatriAux15$inf,segundoCuatriAux15$ident,sum)
+
+segundoCuatriAux16<-
+  data.frame(
+    inf=as.numeric(
+      as.vector(c2.16.15[ind[2:length(ind)],3])), ident=ident)
+segundoCuatriAux16<-
+  tapply(segundoCuatriAux16$inf,segundoCuatriAux16$ident,sum)
+
+segundoCuatri15<-segundoCuatriAux15-primerCuatri15
+segundoCuatri16<-segundoCuatriAux16-primerCuatri16
+
+#tercero
+tercerCuatriAux15<-
+  data.frame(
+    inf=as.numeric(
+      as.vector(c3.16.15[ind[2:length(ind)],2])), ident=ident)
+tercerCuatriAux15<-
+  tapply(tercerCuatriAux15$inf,tercerCuatriAux15$ident,sum)
+
+tercerCuatriAux16<-
+  data.frame(
+    inf=as.numeric(
+      as.vector(c3.16.15[ind[2:length(ind)],3])), ident=ident)
+tercerCuatriAux16<-
+  tapply(tercerCuatriAux16$inf,tercerCuatriAux16$ident,sum)
+
+tercerCuatri15<-tercerCuatriAux15-segundoCuatriAux15
+tercerCuatri16<-tercerCuatriAux16-segundoCuatriAux16
+
+#cuarto
+cuartoCuatriAux15<-
+  data.frame(
+    inf=as.numeric(
+      as.vector(c4.16.15[ind[2:length(ind)],2])), ident=ident)
+cuartoCuatriAux15<-
+  tapply(cuartoCuatriAux15$inf,cuartoCuatriAux15$ident,sum)
+
+cuartoCuatriAux16<-
+  data.frame(
+    inf=as.numeric(
+      as.vector(c4.16.15[ind[2:length(ind)],3])), ident=ident)
+cuartoCuatriAux16<-
+  tapply(cuartoCuatriAux16$inf,cuartoCuatriAux16$ident,sum)
+
+cuartoCuatri15<-cuartoCuatriAux15-tercerCuatriAux15
+cuartoCuatri16<-cuartoCuatriAux16-tercerCuatriAux16
+
+años1516<-
+  c(primerCuatri15,segundoCuatri15,tercerCuatri15,
+    cuartoCuatri15, primerCuatri16,
+    segundoCuatri16,tercerCuatri16,cuartoCuatri16)
+
+años15161718<-c(años1516,años1718)
+
+datosFinales<-
+  data.frame(Infracciones=años15161718,
+             Cuatrimestre= rep(rep(c(1:4),each=19),4),
+             Año=rep(c(2015:2018),each=4*19))
+
+dim(datosFinales)
+
+#====== Datos de prueba: Año 2019 ===============
+
+c1.19<-read.xlsx('1cuatri-19.xlsx', sheetIndex = 1)
+c2.19<-read.xlsx('2cuatri-19.xlsx', sheetIndex = 1)
+c3.19<-read.xlsx('3cuatri-19.xlsx', sheetIndex = 1) 
+
+
+
+ind<- which(c1.19[,2]!="<NA>")
+
+#cuatrimestres
+primerCuatri19<-
+  as.numeric(as.vector(c1.19[ind[2:length(ind)],2]))
+segundoCuatriAux19<-
+  as.numeric(as.vector(c2.19[ind[2:length(ind)],2]))
+
+segundoCuatri19<-segundoCuatriAux19-primerCuatri19
+
+tercerCuatriAux19<-
+  as.numeric(as.vector(c3.19[ind[2:length(ind)],2]))
+
+tercerCuatri19<-tercerCuatriAux19-segundoCuatriAux19
+
+test19<-data.frame(
+  Infracciones=c(primerCuatri19, segundoCuatri19, tercerCuatri19),
+  Cuatrimestre=rep(c(1:3),each=19), Año=rep(2019,57))              
+
+conjuntoEntero<-as.data.frame(rbind(datosFinales,test19))
+dim(conjuntoEntero)
+
+#============== Exportar datos para PYTHON =====================
+
+#file<-paste(getwd(), "/test2019.xlsx",sep="")
+#write.xlsx(test19, file)
+
+#file<-paste(getwd(), "/entrenamiento15-18.xlsx",sep="")
+#write.xlsx(datosFinales, file)
+
+#file<-paste(getwd(), "/datos15-19.xlsx",sep="")
+#write.xlsx(conjuntoEntero, file)
+
+
+
+```
+
+### - Simple
+
+```{r simple, eval=F}
+
+#========== PYTHON ==================
+
+import numpy as np
+from keras.models import Sequential
+from keras.layers import SimpleRNN 
+from keras.layers import LSTM
+from keras.layers import GRU
+from keras.layers import Dense
+import pandas as pd
+import keras.backend as K
+import matplotlib.pyplot as plt
+from sklearn.preprocessing import minmax_scale
+
+def porcentaje_margen(y_true, y_pred):
+    margen = 0.15
+    yy = K.sum(K.cast(K.less(
+      K.abs((y_pred/y_true)-1.0), margen), dtype=float))
+    return yy/K.cast(K.shape(y_pred)[0], dtype=float)
+
+def split_sequence(sequence,n_steps):
+    X,y = list(),list()
+    for i in range(len(sequence)):
+        end_ix = i+n_steps
+        if end_ix > len(sequence)-1:  
+            break
+        seq_x,seq_y = sequence[i:end_ix],sequence[end_ix]
+        X.append(seq_x)
+        y.append(seq_y)
+    return np.array(X),np.array(y)
+    
+tabla_historico=pd.read_excel('datos15-19.xlsx')
+#print(tabla_historico)
+
+#TamaÃ±o de las secuencias
+#en nuestro caso por trimestre cada comunidad
+T=19 
+
+# numero de caracteristicas
+n_features=1
+
+#conjunto X (19 observaciones por serie)
+# observacion y (ultimo valor de cada serie)
+x,y=split_sequence(tabla_historico['Infracciones'],T)
+
+x=x.reshape(x.shape[0], x.shape[1],1)
+
+
+#Train y test
+#desordeno aleatoriamente los indices
+#cojo 2/3 para entrenamiento y 1/3 para test
+
+indices=np.arange(y.shape[0],dtype=int)
+np.random.shuffle(indices)
+train=indices[0:int(y.shape[0]*2/3)]
+test=indices[int(y.shape[0]*2/3):]
+
+#Entrenamiento y validaciÃ³n
+SRNN = Sequential()
+SRNN.add(SimpleRNN(
+  input_shape=(T,n_features),
+  units=30,activation='relu',
+  return_sequences=True))
+
+SRNN.add(SimpleRNN(10,return_sequences=True,activation="relu"))
+SRNN.add(SimpleRNN(5,return_sequences=False,activation="relu"))
+
+#Capa de salida de un perceptrÃ³n multicapa
+SRNN.add(Dense(1)) 
+
+SRNN.compile(
+  optimizer="adam",loss="mse",metrics=[porcentaje_margen])
+
+history=SRNN.fit(
+  x[train], y[train], epochs=100, verbose=1,
+  validation_data=(x[test],y[test]))
+
+plt.plot(history.epoch,
+         history.history['val_porcentaje_margen'],
+         label='validation')
+
+plt.plot(history.epoch,
+         history.history['porcentaje_margen'],
+         label="training")
+
+plt.legend()
+plt.title('EvoluciÃ³n Ã©xito')
+plt.xlabel('Epocas')
+plt.show()
+
+
+```
+
+![Red neuronal recursiva simple](./Graficos/grafRNRSimple.PNG){width=75%}
+
+
+### - LSTM
+
+```{r lstm, eval=F}
+
+#Entrenamiento y validaciÃ³n
+LSTM_model = Sequential()
+
+LSTM_model.add(LSTM(
+  input_shape=(T,n_features),
+  units=30,activation="relu",
+  return_sequences=True))
+
+LSTM_model.add(LSTM(10,return_sequences=True,activation="relu"))
+LSTM_model.add(LSTM(5,return_sequences=False,activation="relu"))
+
+#Capa de salida de un perceptrÃ³n multicapa
+LSTM_model.add(Dense(1)) 
+
+LSTM_model.compile(
+  optimizer="adam",loss="mse",metrics=[porcentaje_margen])
+
+historyLSTM=LSTM_model.fit(
+  x[train], y[train], epochs=100, verbose=1,
+  validation_data=(x[test],y[test]))
+
+plt.plot(historyLSTM.epoch,
+         historyLSTM.history['val_porcentaje_margen'],
+         label='validation')
+
+plt.plot(historyLSTM.epoch,
+         historyLSTM.history['porcentaje_margen'],
+         label="training")
+
+plt.legend()
+plt.title('EvoluciÃ³n Ã©xito')
+plt.xlabel('Epocas')
+plt.show()
+
+
+
+```
+
+![Red neuronal recursiva LSTM](./Graficos/grafRNRlstm.PNG){width=75%}
+
+
+
+# - Gráficos no incluidos en la memoria
+
+```{r noincluidos}
+
+
+#----poblacion----
+
+comunidades<-c("Andalucía" ,"Aragón", "Principado de Asturias",
+               "Islas Baleares", "Islas Canarias",
+               "Cantabria"    ,  "Castilla y León" ,          
+               "Castilla-La Mancha"  ,      
+               "Cataluña"  , "Comunidad Valenciana",
+               "Extremadura", "Galicia", "Comunidad de Madrid",
+               "Región de Murcia","Comunidad Foral de Navarra",
+               "País Vasco" , "La Rioja" , "Ceuta" , "Melilla")
+
+poblacion<-read.xlsx('poblacionComSexo-18.xlsx', sheetIndex = 1)
+
+aux <- which(poblacion[,2]!="<NA>")
+aux <- aux[3:(length(aux))]
+
+pobMasc <- as.numeric(as.vector(poblacion[aux,2]))
+pobFem <- as.numeric(as.vector(poblacion[aux,3]))
+
+
+#----datos infracciones---
+
+data <- read.xlsx('total-infracSexoEdadCom-18.xlsx',
+                  sheetIndex = 1)
+
+tipos <- which(data[,2]!="<NA>")
+tipos <- tipos[3:(length(tipos))]
+
+auxMasc <- as.numeric(as.vector(data[tipos,2]))
+auxFem <- as.numeric(as.vector(data[tipos,3]))
+
+edad<-rep(c("14-17","18-30","31-40","41-64","MÃ¡s de 64"),19)
+sex<-c(rep("Masculino",5*19),rep("Femenino",5*19))
+
+dfComSexoEdad<-data.frame(Edad=edad, Sexo=sex,
+                          Infracciones=c(auxMasc,auxFem),
+                          Indicador=as.factor(rep(c(1:19),each=5))
+)
+
+infMasc<- dfComSexoEdad %>% filter(Sexo=="Masculino")
+tasaMasc<-
+  1000*tapply(infMasc$Infracciones, infMasc$Indicador,sum)/pobMasc
+
+infFem<- dfComSexoEdad %>% filter(Sexo=="Femenino")
+tasaFem<-
+  1000*tapply(infFem$Infracciones, infFem$Indicador,sum)/pobFem
+
+#========== datos paro==============
+
+datos<-read.xlsx('tasaParoSexo-18.xlsx', sheetIndex = 1)
+
+tipos <- which(datos[,2]!="<NA>")
+tipos <- tipos[4:(length(tipos))]
+
+auxMasc <- (as.numeric(as.vector(datos[tipos,2])) +
+              as.numeric(as.vector(datos[tipos,3])) + 
+              as.numeric(as.vector(datos[tipos,4])) +
+              as.numeric(as.vector(datos[tipos,5])))/4
+auxFem <- (as.numeric(as.vector(datos[tipos,6])) +
+             as.numeric(as.vector(datos[tipos,7]))+
+             as.numeric(as.vector(datos[tipos,8])) +
+             as.numeric(as.vector(datos[tipos,9])))/4
+
+#======================= Barplot circular ==============
+
+Sexo<-rep(rep(c("Masculino","Femenino"),each=19),2)
+valores<-c(tasaMasc,tasaFem, auxMasc, auxFem )
+
+#CODIFICACION:
+#A: tasa de criminalidad hombres
+#B: tasa de criminalidad mujeres
+#C: tasa de paro hombres
+#D: tasa de paro mujeres
+
+data=data.frame(
+  individual=rep(comunidades,4),
+  group=
+    c( rep('A', 19), rep('B', 19), rep('D', 19), rep('C', 19)),
+  value=valores
+)
+
+data = data %>% arrange(group, value)
+
+data
+
+empty_bar=3
+to_add = 
+  data.frame(
+    matrix(NA, empty_bar*nlevels(data$group), ncol(data)))
+
+colnames(to_add) = colnames(data)
+to_add$group=rep(levels(data$group), each=empty_bar)
+data=rbind(data, to_add)
+data=data %>% arrange(group)
+data$id=seq(1, nrow(data))
+
+label_data=data
+number_of_bar=nrow(label_data)
+angle= 90 - 360 * (label_data$id-0.5) /number_of_bar 
+label_data$hjust<-ifelse( angle < -90, 1, 0)
+label_data$angle<-ifelse(angle < -90, angle+180, angle)
+
+base_data=data %>% 
+  group_by(group) %>% 
+  summarize(start=min(id), end=max(id) - empty_bar) %>% 
+  rowwise() %>% 
+  mutate(title=mean(c(start, end)))
+
+
+grid_data = base_data
+grid_data$end = 
+  grid_data$end[ c( nrow(grid_data), 1:nrow(grid_data)-1)] + 1
+grid_data$start = grid_data$start - 1
+grid_data=grid_data[-1,]
+
+p = 
+  ggplot(data, aes(x=as.factor(id), y=value, fill=group)) +     
+  geom_bar(aes(x=as.factor(id), y=value, fill=group),
+           stat="identity", alpha=0.5) +
+  geom_segment(data=grid_data, aes(x = end, y = 80,
+                                   xend = start, yend = 80),
+               colour = "grey", alpha=1, size=0.3 ,
+               inherit.aes = FALSE ) +
+  geom_segment(data=grid_data, aes(x = end, y = 60,
+                                   xend = start, yend = 60),
+               colour = "grey", alpha=1, size=0.3 ,
+               inherit.aes = FALSE ) +
+  geom_segment(data=grid_data, aes(x = end, y = 40,
+                                   xend = start, yend = 40),
+               colour = "grey", alpha=1, size=0.3 ,
+               inherit.aes = FALSE ) +
+  geom_segment(data=grid_data, aes(x = end, y = 20,
+                                   xend = start, yend = 20),
+               colour = "grey", alpha=1, size=0.3 ,
+               inherit.aes = FALSE ) +
+  annotate("text", x = rep(max(data$id),4), y = c(20, 40, 60, 80),
+           label = c("20", "40", "60", "80") , color="grey",
+           size=3 , angle=0, fontface="bold", hjust=1) +
+  geom_bar(aes(x=as.factor(id), y=value, fill=group),
+           stat="identity", alpha=0.5) +
+  ylim(-100,120) +
+  theme_minimal() +
+  theme(
+    legend.position = "none",
+    axis.text = element_blank(),
+    axis.title = element_blank(),
+    panel.grid = element_blank(),
+    plot.margin = unit(rep(-1,4), "cm")) +
+  coord_polar() + 
+  geom_text(data=label_data, aes(x=id, y=value+10,
+                                 label=individual, hjust=hjust),
+            color="black", fontface="bold",alpha=0.6, size=2.5,
+            angle= label_data$angle, inherit.aes = FALSE ) +
+  geom_segment(data=base_data, aes(x = start, y = -5,
+                                   xend = end, yend = -5),
+               colour = "black", alpha=0.8, size=0.6 ,
+               inherit.aes = FALSE )  +
+  geom_text(data=base_data, aes(x = title, y = -18,
+                                label=group), hjust=c(1,1,0,0),
+            colour = "black", alpha=0.8, size=4,
+            fontface="bold", inherit.aes = FALSE)
+
+p
+
+
+
+
+#=========== Boxplot violin -> sexo y edad ==================
+
+
+
+data <- read.xlsx('total-infracSexoEdadCom-18.xlsx',
+                  sheetIndex = 1)
+
+tipos <- which(data[,2]!="<NA>")
+tipos <- tipos[3:(length(tipos))]
+
+auxMasc <- as.numeric(as.vector(data[tipos,2]))
+auxFem <- as.numeric(as.vector(data[tipos,3]))
+
+
+comunidades<-c("Andalucía" ,"Aragón", "Principado de Asturias",
+               "Islas Baleares", "Islas Canarias",                 
+               "Cantabria"    ,  "Castilla y León" , 
+               "Castilla-La Mancha"  ,      
+               "Cataluña"  , "Comunidad Valenciana",
+               "Extremadura", "Galicia", "Comunidad de Madrid",
+               "Región de Murcia","Comunidad Foral de Navarra",
+               "País Vasco" , "La Rioja" , "Ceuta" , "Melilla")
+
+edad<-rep(c("14-17","18-30","31-40","41-64","MÃ¡s de 64"),19)
+sex<-c(rep("Masculino",5*19),rep("Femenino",5*19))
+
+dfComSexoEdad<-data.frame(Edad=edad, Sexo=sex,
+                          Infracciones=c(auxMasc,auxFem),
+                          Comunidad=rep(comunidades,each=5),
+                          Poblacion=pob$pob18[2:dim(pob)[1]]
+                          )
+dfComSexoEdad <- dfComSexoEdad %>%
+  mutate(Tasa=1000*Infracciones/Poblacion)
+
+dfComSexoEdad
+
+p <- dfComSexoEdad %>%
+  plot_ly(type = 'violin') %>%
+  add_trace(
+    x = ~Edad[dfComSexoEdad$Sexo == 'Femenino'],
+    y = ~Infracciones[dfComSexoEdad$Sexo == 'Femenino'],
+    legendgroup = 'Femenino',
+    scalegroup = 'Femenino',
+    name = 'Femenino',
+    side = 'negative',
+    box = list(
+      visible = T
+    ),
+    meanline = list(
+      visible = T
+    ),
+    color = I("#8dd3c7")
+  ) %>%
+  add_trace(
+    x = ~Edad[dfComSexoEdad$Sexo == 'Masculino'],
+    y = ~Infracciones[dfComSexoEdad$Sexo == 'Masculino'],
+    legendgroup = 'Masculino',
+    scalegroup = 'Masculino',
+    name = 'Masculino',
+    side = 'positive',
+    box = list(
+      visible = T
+    ),
+    meanline = list(
+      visible = T
+    ),
+    color = I("#bebada")
+  ) %>% 
+  layout(
+    title = "Densidad y cuartiles",
+    xaxis = list(
+      title = "Edad"  
+    ),
+    yaxis = list(
+      title = "Número de infracciones",
+      zeroline = F
+    ),
+    violingap = 0,
+    violingroupgap = 0,
+    violinmode = 'overlay'
+  )
+
+p
+
+
+```
+
+
+
+
+
+
