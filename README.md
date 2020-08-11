@@ -13,7 +13,8 @@ modelo lineal generalizado, distribución de Poisson, red neuronal recursiva, an
 correspondencias, análisis de componentes principales, análisis de la varianza, Rstudio, Python,
 plotly, ggplot2.
 
-### Ficheros
+### Jerarquía ficheros
 
 * MemoriaTFG_Estadistica_IvanLopezMunain: documentación sobre todos los desarrollos realizados.
-* Codigo:
+* Código: ficheros en R y Python encargados de aplicar las técnicas estadísticas.
+* Datos: datos empleados (todos procedentes de fuentes abiertas).
